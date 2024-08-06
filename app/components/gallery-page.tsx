@@ -38,7 +38,7 @@ const GalleryChildren: React.FC<{ items: GalleryEntry[]; slug: string }> = ({
                   src={`/${slug}/${getThumbnailUrl(cliff.url)}`}
                   alt={cliff.name}
                 />
-                <div className="text-center">{cliff.name}</div>
+                <div className="text-center break-words">{cliff.name}</div>
               </div>
             )}
           </Item>
