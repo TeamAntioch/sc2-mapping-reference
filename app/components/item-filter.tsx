@@ -54,7 +54,7 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
           }
           router.push(pathname + "?" + params.toString());
         },
-        100
+        10
       ),
     []
   );
@@ -72,22 +72,44 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
 export const ItemFilter: React.FC<{}> = () => {
   const { filter, setFilter } = useContext(ItemFilterContext);
+  const [localFilter, setLocalFilter] = useState(filter);
   return (
     <section className="my-4">
-      <div>
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setFilter(localFilter);
+        }}
+        onKeyUp={(e) => {
+          if (e.key === "Escape") {
+            setLocalFilter("");
+            setFilter("");
+          }
+        }}
+      >
         Filter:{" "}
         <input
           className="text-black p-2"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          value={localFilter}
+          onChange={(e) => setLocalFilter(e.target.value)}
         />{" "}
         <button
           className="rounded border-white border-solid border-2 p-2"
-          onClick={() => setFilter("")}
+          onClick={() => setFilter(localFilter)}
+        >
+          submit
+        </button>
+        <button
+          className="rounded border-white border-solid border-2 p-2"
+          onClick={() => {
+            setLocalFilter("");
+            setFilter("");
+          }}
         >
           clear
         </button>
-      </div>
+      </form>
       <div className="mt-2 max-w-xl">
         <em>
           Hint: You can search for multiple terms by separating each term with a
