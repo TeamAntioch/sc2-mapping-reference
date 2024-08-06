@@ -39,7 +39,7 @@ export const ItemFilter: React.FC<{}> = () => {
           clear
         </button>
       </div>
-      <div className="mt-2 w-6/12">
+      <div className="mt-2 max-w-xl">
         <em>
           Hint: You can search for multiple terms by separating each term with a
           comma. For example: &quot;zerg, creep&quot; to search anything that

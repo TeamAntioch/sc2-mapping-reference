@@ -18,7 +18,7 @@ const GalleryChildren: React.FC<{ items: GalleryEntry[]; slug: string }> = ({
   const { filter } = useContext(ItemFilterContext);
   const filteredItems = useFilteredItems(items, filter);
   return (
-    <section className="grid grid-cols-8 grid-flow-row-dense gap-8">
+    <section className="grid grid-cols-auto-fill-100 gap-8 items-start">
       <Gallery>
         {filteredItems.map((cliff) => (
           <Item
