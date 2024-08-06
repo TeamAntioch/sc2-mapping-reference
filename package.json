@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/lodash": "^4.17.7",
+    "lodash": "^4.17.21",
     "next": "14.2.5",
     "photoswipe": "^5.4.4",
     "react": "^18",
