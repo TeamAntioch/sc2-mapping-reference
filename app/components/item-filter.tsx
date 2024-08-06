@@ -32,7 +32,19 @@ export const ItemFilter: React.FC<{}> = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />{" "}
-        <button onClick={() => setFilter("")}>clear</button>
+        <button
+          className="rounded border-white border-solid border-2 p-2"
+          onClick={() => setFilter("")}
+        >
+          clear
+        </button>
+      </div>
+      <div className="mt-2 w-6/12">
+        <em>
+          Hint: You can search for multiple terms by separating each term with a
+          comma. For example: &quot;zerg, creep&quot; to search anything that
+          contains either &quot;zerg&quot; or &quot;creep&quot;.
+        </em>
       </div>
     </section>
   );
