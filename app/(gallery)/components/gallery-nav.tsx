@@ -32,8 +32,6 @@ export const GalleryNav: React.FC<{}> = () => {
       <GalleryLink name="Tilesets" url="tilesets" />
       {" | "}
       <GalleryLink name="Terrain Gallery" url="terrain" />
-      {" | "}
-      <GalleryLink name="Sample Maps" url="maps" />
     </nav>
   );
 };

@@ -30,11 +30,6 @@ const sections: {
     name: "Terrain Gallery",
     url: "/terrain",
   },
-  {
-    imageUrl: `/maps/${maps[0].url}`,
-    name: "Samples Maps",
-    url: "/maps",
-  },
 ];
 
 export default function Home() {
