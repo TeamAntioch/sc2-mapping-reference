@@ -37,7 +37,7 @@ export default function Home() {
       <header className="flex flex-col items-center mb-4">
         <h1 className="text-4xl font-bold">StarCraft 2 Mapping Reference</h1>
       </header>
-      <section className="grid grid-cols-5 gap-3">
+      <section className="grid grid-cols-4 gap-3 items-end">
         {sections.map((section) => (
           <GalleryLink
             key={section.name}
