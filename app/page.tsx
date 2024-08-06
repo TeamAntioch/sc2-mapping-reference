@@ -2,7 +2,6 @@ import cliffs from "@/app/(gallery)/cliffs/cliff-list";
 import doodads from "@/app/(gallery)/doodads/doodad-list";
 import terrain from "@/app/(gallery)/terrain/terrain-list";
 import tilesets from "@/app/(gallery)/tilesets/tileset-list";
-import maps from "@/app/(gallery)/maps/map-list";
 import { GalleryLink } from "@/app/components/gallery-link";
 
 const sections: {
