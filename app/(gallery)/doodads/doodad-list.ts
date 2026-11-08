@@ -6737,21 +6737,6 @@ const doodads: GalleryEntry[] =[
       "tags": ""
   },
   {
-      "name": "THorner05SElectricalArcs",
-      "url": "THorner05SElectricalArcs.jpg",
-      "tags": ""
-  },
-  {
-      "name": "THorner05SFlashingLights",
-      "url": "THorner05SFlashingLights.jpg",
-      "tags": ""
-  },
-  {
-      "name": "THorner05S Zerg Pens Center",
-      "url": "THorner05S_Zerg_Pens_Center.jpg",
-      "tags": ""
-  },
-  {
       "name": "Thunder & Lightning",
       "url": "Thunder_&_Lightning.jpg",
       "tags": ""
