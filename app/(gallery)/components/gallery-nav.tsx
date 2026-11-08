@@ -1,5 +1,6 @@
 "use client";
 
+import { PalettePanelButton } from "@/app/components/palette-panel";
 import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
 
@@ -32,6 +33,8 @@ export const GalleryNav: React.FC<{}> = () => {
       <GalleryLink name="Tilesets" url="tilesets" />
       {" | "}
       <GalleryLink name="Terrain Gallery" url="terrain" />
+      {" | "}
+      <PalettePanelButton />
     </nav>
   );
 };
