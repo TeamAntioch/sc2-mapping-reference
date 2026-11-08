@@ -22,7 +22,7 @@ const GalleryChildren: React.FC<{ items: GalleryEntry[]; slug: string }> = ({
       <Gallery>
         {filteredItems.map((cliff) => (
           <Item
-            key={cliff.url}
+            key={`${cliff.name}|${cliff.url}`}
             original={`/${slug}/${cliff.url}`}
             thumbnail={`/${slug}/${getThumbnailUrl(cliff.url)}`}
             width={1168}
