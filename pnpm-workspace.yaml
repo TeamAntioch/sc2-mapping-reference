@@ -1,0 +1,21 @@
+# pnpm settings. pnpm 11 and later read these from here, not from .npmrc.
+
+# A flat node_modules: Vercel refuses a function whose files sit in pnpm's symlinked folders.
+nodeLinker: hoisted
+
+# Which dependencies may run install scripts. None of these need to:
+allowBuilds:
+  # Its CPU binaries ship in the package. The script only downloads extras such as the CUDA
+  # binaries: hundreds of MB the CPU-only doodad search never loads, too big for a Vercel Function.
+  onnxruntime-node: false
+  # Only builds libvips from source when its prebuilt @img/* binaries are missing.
+  sharp: false
+  # Only prints a version-scheme warning.
+  protobufjs: false
+
+# Our own packages are often used right after they're published, inside the release-age delay.
+minimumReleaseAgeExclude:
+  - "@team-antioch/*"
+  # Published 2026-11-12, inside the delay when the lockfile moved to pnpm 12. Safe to drop
+  # once a day has passed.
+  - "@upstash/ratelimit@2.2.1"
