@@ -88,6 +88,24 @@ function opened(): Promise<Opened> {
   return opening;
 }
 
+let warming: Promise<void> | undefined;
+/**
+ * Opens the instance's finder and narrows one throwaway ask, so the model is loaded and its first
+ * (slowest) embedding done before anyone searches. Later calls on the same instance cost nothing.
+ */
+export function warmDoodadSearch(): Promise<void> {
+  warming ??= opened()
+    .then(({ finder }) => finder.narrow("warm up"))
+    .then(
+      () => {},
+      (error: unknown) => {
+        warming = undefined;
+        throw error;
+      },
+    );
+  return warming;
+}
+
 export async function searchDoodads(
   rawAsk: string,
   budget: DailyBudget,
