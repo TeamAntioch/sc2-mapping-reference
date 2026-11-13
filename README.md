@@ -20,6 +20,34 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Doodad search
+
+The doodads page searches in plain words through `/api/doodad-search`, using
+[`@team-antioch/sc2-doodad-finder`](https://github.com/TeamAntioch/sc2-asset-catalog).
+The other galleries keep the comma-separated name filter.
+
+- **Build.** `pnpm build` first runs `scripts/build-search-index.mjs`. It writes
+  `.search/` (git-ignored): the catalog extracted from SC2GameData (with the
+  gallery listed from this checkout's `public/doodads`), the gte-small
+  embeddings model, and every card's vector. `next.config.mjs` ships that
+  folder and ONNX Runtime's Linux addon with the route. It takes about 40 s.
+- **Ranking.** With `TYPESAFE_API_KEY` set, Jev ranks the narrowed candidates
+  (about $0.0013 an ask). Without it, results come in the narrowing's order.
+- **Limits.** They are kept in the project's Upstash Redis (`KV_REST_API_URL`,
+  `KV_REST_API_TOKEN`):
+  - every ask counts against a per-IP rate limit, `DOODAD_SEARCH_RATE_LIMIT`
+    asks a minute (20 by default);
+  - Jev is called only while the UTC day's spend is under
+    `DOODAD_SEARCH_DAILY_BUDGET` US dollars (1 by default).
+
+  Without Redis there is no rate limit and Jev isn't called. Changing either
+  limit takes a redeploy.
+
+The doodad descriptions are © their authors under CC BY 4.0, from
+sc2-asset-catalog. The gallery pictures are Editor screenshots of Blizzard's
+assets, kept for reference. This site is not affiliated with Blizzard
+Entertainment.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -41,7 +41,7 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
           newFilter: string,
           currentParams: ReadonlyURLSearchParams,
           pathname: string,
-          router: AppRouterInstance
+          router: AppRouterInstance,
         ) => {
           const params = new URLSearchParams(currentParams.toString());
           if (newFilter === getDecodedUrlFilter(params)) {
@@ -54,9 +54,9 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
           }
           router.push(pathname + "?" + params.toString());
         },
-        10
+        10,
       ),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -70,7 +70,17 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
   );
 };
 
-export const ItemFilter: React.FC<{}> = () => {
+const COMMA_HINT = (
+  <>
+    Hint: You can search for multiple terms by separating each term with a
+    comma. For example: &quot;zerg, creep&quot; to search anything that contains
+    either &quot;zerg&quot; or &quot;creep&quot;.
+  </>
+);
+
+export const ItemFilter: React.FC<{ hint?: React.ReactNode }> = ({
+  hint = COMMA_HINT,
+}) => {
   const { filter, setFilter } = useContext(ItemFilterContext);
   const [localFilter, setLocalFilter] = useState(filter);
   return (
@@ -111,11 +121,7 @@ export const ItemFilter: React.FC<{}> = () => {
         </button>
       </form>
       <div className="mt-2 max-w-xl">
-        <em>
-          Hint: You can search for multiple terms by separating each term with a
-          comma. For example: &quot;zerg, creep&quot; to search anything that
-          contains either &quot;zerg&quot; or &quot;creep&quot;.
-        </em>
+        <em>{hint}</em>
       </div>
     </section>
   );
