@@ -59,6 +59,9 @@ async function open(): Promise<Opened> {
     usesDir: path.join(dataDir, "doodad-uses"),
   };
   // The weights are in .search/models already; never fetch them on a request.
+  // Imported here, from the app, so the function ships node_modules/onnxruntime-node: pnpm's link
+  // beside transformers isn't traced, and Node finds this one walking up from it.
+  await import("onnxruntime-node");
   const { env } = await import("@huggingface/transformers");
   env.allowRemoteModels = false;
   const embedder = await localEmbedder({ cacheDir: path.join(dir, "models") });
