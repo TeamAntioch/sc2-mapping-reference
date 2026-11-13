@@ -5,6 +5,7 @@ import {
   ItemFilterContext,
   ItemFilterProvider,
 } from "@/app/components/item-filter";
+import { HudTile } from "@/app/components/hud-tile";
 import { PaletteToggle } from "@/app/components/palette-toggle";
 import {
   RankedStatus,
@@ -31,7 +32,7 @@ const RANKED_HINT = (
     hide behind&quot; or &quot;Protoss ruin pillar&quot;, and the doodads that
     fit best come first. Doodad descriptions are from{" "}
     <a
-      className="underline"
+      className="text-cyan-300 underline decoration-cyan-300/40 underline-offset-2 hover:text-cyan-200"
       href="https://github.com/TeamAntioch/sc2-asset-catalog"
     >
       sc2-asset-catalog
@@ -70,37 +71,37 @@ const GalleryChildren: React.FC<GalleryProps> = ({
   const note = statusText(status);
   return (
     <>
-      {note && <p className="mb-4 text-sm opacity-80">{note}</p>}
+      {note && (
+        <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
+          <span className="text-cyan-400/80">{"// "}</span>
+          {note}
+        </p>
+      )}
       <section className="grid grid-cols-auto-fill-100 gap-8 items-start">
         <Gallery>
-          {filteredItems.map((cliff) => (
+          {filteredItems.map((entry) => (
             <Item
-              key={getEntryKey(cliff)}
-              original={`/${slug}/${cliff.url}`}
-              thumbnail={`/${slug}/${getThumbnailUrl(cliff.url)}`}
+              key={getEntryKey(entry)}
+              original={`/${slug}/${entry.url}`}
+              thumbnail={`/${slug}/${getThumbnailUrl(entry.url)}`}
               width={1168}
               height={915}
             >
               {({ ref, open }) => (
-                <div
+                <HudTile
                   ref={ref}
                   onClick={open}
-                  className="flex flex-col justify-center cursor-pointer hover:text-orange-400 transition-colors"
-                >
-                  <div className="relative">
-                    <img
-                      src={`/${slug}/${getThumbnailUrl(cliff.url)}`}
-                      alt={cliff.name}
-                    />
-                    {paletteEnabled && (
+                  src={`/${slug}/${getThumbnailUrl(entry.url)}`}
+                  name={entry.name}
+                  badge={
+                    paletteEnabled && (
                       <PaletteToggle
-                        entryKey={getEntryKey(cliff)}
-                        name={cliff.name}
+                        entryKey={getEntryKey(entry)}
+                        name={entry.name}
                       />
-                    )}
-                  </div>
-                  <div className="text-center break-words">{cliff.name}</div>
-                </div>
+                    )
+                  }
+                />
               )}
             </Item>
           ))}
