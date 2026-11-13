@@ -16,6 +16,9 @@ const nextConfig = {
       "./.search/**/*",
       "./node_modules/onnxruntime-node/{package.json,dist/**/*,bin/napi-v6/linux/x64/{libonnxruntime.so.1,onnxruntime_binding.node}}",
       "./node_modules/onnxruntime-common/**/*",
+      // sharp, which transformers loads, finds libvips by a path tracing doesn't follow either.
+      "./node_modules/@img/sharp-linux-x64/**/*",
+      "./node_modules/@img/sharp-libvips-linux-x64/**/*",
     ],
   },
 };
