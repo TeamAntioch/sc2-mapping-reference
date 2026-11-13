@@ -14,8 +14,8 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "/api/doodad-search": [
       "./.search/**/*",
-      "./node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-node/{package.json,dist/**/*,bin/napi-v6/linux/x64/{libonnxruntime.so.1,onnxruntime_binding.node}}",
-      "./node_modules/.pnpm/onnxruntime-node@*/node_modules/onnxruntime-common/**/*",
+      "./node_modules/onnxruntime-node/{package.json,dist/**/*,bin/napi-v6/linux/x64/{libonnxruntime.so.1,onnxruntime_binding.node}}",
+      "./node_modules/onnxruntime-common/**/*",
     ],
   },
 };
