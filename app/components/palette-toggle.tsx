@@ -22,8 +22,10 @@ export const PaletteToggle: React.FC<{ entryKey: string; name: string }> = ({
         e.stopPropagation();
         toggle(entryKey);
       }}
-      className={`absolute top-1 right-1 h-7 w-7 rounded-full bg-black/70 text-lg leading-none transition-colors hover:text-orange-400 ${
-        inPalette ? "text-orange-400" : "text-white"
+      className={`absolute top-1 right-1 grid h-6 w-6 place-items-center border bg-slate-950/80 text-sm leading-none transition-colors hover:border-orange-400 hover:text-orange-300 ${
+        inPalette
+          ? "border-orange-400/70 text-orange-400"
+          : "border-cyan-400/30 text-sky-100"
       }`}
     >
       {inPalette ? "★" : "☆"}

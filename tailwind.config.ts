@@ -9,6 +9,13 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-chakra-petch)", "system-ui", "sans-serif"],
+      },
+      dropShadow: {
+        glow: "0 0 8px rgba(34, 211, 238, 0.55)",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

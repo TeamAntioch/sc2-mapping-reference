@@ -83,45 +83,59 @@ export const ItemFilter: React.FC<{ hint?: React.ReactNode }> = ({
 }) => {
   const { filter, setFilter } = useContext(ItemFilterContext);
   const [localFilter, setLocalFilter] = useState(filter);
+  const clear = () => {
+    setLocalFilter("");
+    setFilter("");
+  };
   return (
-    <section className="my-4">
+    <section className="mb-6">
       <form
-        className="flex gap-2"
+        role="search"
+        className="flex max-w-2xl items-stretch gap-2"
         onSubmit={(e) => {
           e.preventDefault();
           setFilter(localFilter);
         }}
         onKeyUp={(e) => {
           if (e.key === "Escape") {
-            setLocalFilter("");
-            setFilter("");
+            clear();
           }
         }}
       >
-        Filter:{" "}
-        <input
-          className="text-black p-2"
-          value={localFilter}
-          onChange={(e) => setLocalFilter(e.target.value)}
-        />{" "}
+        <label className="clip-panel flex flex-1 items-center gap-3 bg-cyan-400/50 p-px transition-colors focus-within:bg-cyan-300">
+          <span className="clip-panel flex flex-1 items-center gap-3 bg-[#0a2133] px-4 py-2.5">
+            <span aria-hidden className="font-display font-semibold text-cyan-400">
+              &gt;
+            </span>
+            <span className="sr-only">Filter</span>
+            <input
+              className="min-w-0 flex-1 bg-transparent text-cyan-50 placeholder:text-sky-300/40 focus:outline-none"
+              placeholder="Search…"
+              value={localFilter}
+              onChange={(e) => setLocalFilter(e.target.value)}
+            />
+            {localFilter && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                title="Clear search (Esc)"
+                className="text-sky-300/60 transition-colors hover:text-orange-300"
+                onClick={clear}
+              >
+                ✕
+              </button>
+            )}
+          </span>
+        </label>
         <button
-          className="rounded border-white border-solid border-2 p-2"
-          onClick={() => setFilter(localFilter)}
+          type="submit"
+          className="clip-tab bg-cyan-400/20 px-5 font-display text-xs font-semibold uppercase tracking-[0.15em] text-cyan-100 shadow-[inset_0_-2px_0_#22d3ee] transition-colors hover:bg-cyan-400/35"
         >
-          submit
-        </button>
-        <button
-          className="rounded border-white border-solid border-2 p-2"
-          onClick={() => {
-            setLocalFilter("");
-            setFilter("");
-          }}
-        >
-          clear
+          Search
         </button>
       </form>
-      <div className="mt-2 max-w-xl">
-        <em>{hint}</em>
+      <div className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-500">
+        {hint}
       </div>
     </section>
   );

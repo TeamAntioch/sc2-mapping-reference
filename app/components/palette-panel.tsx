@@ -1,6 +1,7 @@
 "use client";
 
 import doodads from "@/app/(gallery)/doodads/doodad-list";
+import { HudTile } from "@/app/components/hud-tile";
 import { PaletteToggle } from "@/app/components/palette-toggle";
 import { getEntryKey } from "@/lib/get-entry-key";
 import { getThumbnailUrl } from "@/lib/get-thumbnail-url";
@@ -20,6 +21,9 @@ const doodadsByKey = new Map<string, GalleryEntry>(
  */
 export const PANEL_WIDTH_CLASSES = "w-40 md:w-72";
 export const PANEL_OFFSET_CLASSES = "pr-40 md:pr-72";
+
+/** Console-style counter: 3 → "03". */
+const formatCount = (n: number) => String(n).padStart(2, "0");
 
 export const PalettePanel: React.FC = () => {
   const { isOpen, setOpen } = usePalettePanel();
@@ -41,18 +45,18 @@ export const PalettePanel: React.FC = () => {
   return (
     <aside
       aria-label="Doodad palette"
-      className={`fixed top-0 right-0 bottom-0 z-10 flex flex-col border-l border-white/20 bg-neutral-900 shadow-xl ${PANEL_WIDTH_CLASSES}`}
+      className={`fixed top-0 right-0 bottom-0 z-10 flex flex-col border-l border-cyan-400/35 bg-[#08111d]/95 shadow-[-8px_0_24px_rgba(0,0,0,0.5)] backdrop-blur ${PANEL_WIDTH_CLASSES}`}
       onKeyDown={(e) => {
         if (e.key === "Escape") {
           setOpen(false);
         }
       }}
     >
-      <header className="flex items-center justify-between border-b border-white/20 p-3">
-        <h2 className="font-semibold">
+      <header className="flex items-center justify-between border-b border-cyan-400/35 bg-gradient-to-b from-cyan-900/40 to-transparent px-3 py-3">
+        <h2 className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-orange-300">
           Palette{" "}
-          <span className="text-sm font-normal text-white/60">
-            ({items.length})
+          <span className="font-normal text-orange-300/70">
+            [{formatCount(items.length)}]
           </span>
         </h2>
         <button
@@ -60,15 +64,17 @@ export const PalettePanel: React.FC = () => {
           aria-label="Close palette"
           title="Close palette"
           onClick={() => setOpen(false)}
-          className="h-7 w-7 rounded leading-none hover:text-orange-400"
+          className="grid h-7 w-7 place-items-center border border-cyan-400/30 leading-none text-sky-200 transition-colors hover:border-orange-400 hover:text-orange-300"
         >
           ✕
         </button>
       </header>
       <div className="flex-1 overflow-y-auto p-3">
         {items.length === 0 ? (
-          <p className="text-sm text-white/70">
-            Your palette is empty. Click the ☆ on any doodad to add it here.
+          <p className="text-sm leading-relaxed text-slate-400">
+            Your palette is empty. Click the{" "}
+            <span className="text-sky-100">☆</span> on any doodad to add it
+            here.
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
@@ -82,25 +88,18 @@ export const PalettePanel: React.FC = () => {
                   height={915}
                 >
                   {({ ref, open }) => (
-                    <div
+                    <HudTile
                       ref={ref}
                       onClick={open}
-                      className="flex flex-col cursor-pointer hover:text-orange-400 transition-colors"
-                    >
-                      <div className="relative">
-                        <img
-                          src={`/doodads/${getThumbnailUrl(doodad.url)}`}
-                          alt={doodad.name}
-                        />
+                      src={`/doodads/${getThumbnailUrl(doodad.url)}`}
+                      name={doodad.name}
+                      badge={
                         <PaletteToggle
                           entryKey={getEntryKey(doodad)}
                           name={doodad.name}
                         />
-                      </div>
-                      <div className="text-center text-sm break-words">
-                        {doodad.name}
-                      </div>
-                    </div>
+                      }
+                    />
                   )}
                 </Item>
               ))}
@@ -129,11 +128,13 @@ export const PalettePanelButton: React.FC = () => {
       type="button"
       aria-expanded={isOpen}
       onClick={toggleOpen}
-      className={`hover:text-orange-400 transition-colors ${
-        isOpen ? "text-orange-400" : ""
+      className={`border px-3 py-1 font-display text-[11px] uppercase tracking-[0.1em] transition-colors ${
+        isOpen
+          ? "border-orange-400 bg-orange-400/15 text-orange-200"
+          : "border-orange-400/50 text-orange-300 hover:border-orange-400 hover:bg-orange-400/10"
       }`}
     >
-      Palette ({count})
+      Palette [{formatCount(count)}]
     </button>
   );
 };

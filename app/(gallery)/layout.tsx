@@ -6,10 +6,10 @@ import { Suspense } from "react";
 const GalleryLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
   <>
     <PaletteOffset>
-      <div className="p-8">
-        <GalleryNav />
+      <GalleryNav />
+      <main className="px-4 py-6 sm:px-6">
         <Suspense>{children}</Suspense>
-      </div>
+      </main>
     </PaletteOffset>
     <PalettePanel />
   </>
