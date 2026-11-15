@@ -6,6 +6,7 @@ import {
   ItemFilterProvider,
 } from "@/app/components/item-filter";
 import { HudTile } from "@/app/components/hud-tile";
+import { SearchModeToggles } from "@/app/components/search-mode-toggles";
 import { PaletteToggle } from "@/app/components/palette-toggle";
 import {
   RankedStatus,
@@ -14,6 +15,8 @@ import {
 import { getEntryKey } from "@/lib/get-entry-key";
 import { getThumbnailUrl } from "@/lib/get-thumbnail-url";
 import { GalleryEntry } from "@/lib/types";
+import { useJevGrades } from "@/lib/use-jev-grades";
+import { useSearchCertainty, useSearchModes } from "@/lib/use-search-modes";
 import { useContext } from "react";
 import { Gallery, Item } from "react-photoswipe-gallery";
 
@@ -63,14 +66,18 @@ const GalleryChildren: React.FC<GalleryProps> = ({
   rankedSearch = false,
 }) => {
   const { filter } = useContext(ItemFilterContext);
-  const { items: filteredItems, status } = useRankedItems(
-    items,
-    filter,
-    rankedSearch,
-  );
+  const { modes } = useSearchModes();
+  const showGrades = useJevGrades();
+  const { minLevel } = useSearchCertainty();
+  const {
+    items: filteredItems,
+    status,
+    levels,
+  } = useRankedItems(items, filter, rankedSearch, modes, minLevel);
   const note = statusText(status);
   return (
     <>
+      {rankedSearch && <SearchModeToggles />}
       {note && (
         <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
@@ -94,12 +101,19 @@ const GalleryChildren: React.FC<GalleryProps> = ({
                   src={`/${slug}/${getThumbnailUrl(entry.url)}`}
                   name={entry.name}
                   badge={
-                    paletteEnabled && (
-                      <PaletteToggle
-                        entryKey={getEntryKey(entry)}
-                        name={entry.name}
-                      />
-                    )
+                    <>
+                      {showGrades && levels.has(entry) && (
+                        <span className="absolute left-1 top-1 bg-slate-950/90 px-1.5 py-0.5 font-display text-[10px] font-semibold text-orange-300">
+                          J{levels.get(entry)}
+                        </span>
+                      )}
+                      {paletteEnabled && (
+                        <PaletteToggle
+                          entryKey={getEntryKey(entry)}
+                          name={entry.name}
+                        />
+                      )}
+                    </>
                   }
                 />
               )}
