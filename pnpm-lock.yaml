@@ -170,11 +170,14 @@ importers:
         specifier: 4.3.2
         version: 4.3.2(@types/node@20.19.43)
       '@team-antioch/sc2-asset-catalog':
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: ^0.2.0
+        version: 0.2.0
       '@team-antioch/sc2-doodad-finder':
-        specifier: 0.1.2
-        version: 0.1.2(@types/node@20.19.43)
+        specifier: ^0.2.0
+        version: 0.2.0(@types/node@20.19.43)
+      '@team-antioch/sc2-finder-kit':
+        specifier: ^0.2.0
+        version: 0.2.0(@types/node@20.19.43)
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.27
@@ -723,15 +726,19 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@team-antioch/sc2-asset-catalog@0.1.2':
-    resolution: {integrity: sha512-w/kddTmAmZtEWWV8zTsthDgrBKd2lbrgiVgMTKxrHFnhfD0FrOjX90cniGr14c2ht63n5GQoi1r14+36p3w8jA==}
+  '@team-antioch/sc2-asset-catalog@0.2.0':
+    resolution: {integrity: sha512-c8mJ6kfoBpNjna1ifc6xsx3eNWLpNRlLXh/C7PKFEpl+nsHAKr8SzqLOYfp8CkPBW1IQlgi7hl0S6gmE3zZH/Q==}
     engines: {node: '>=22.18'}
     hasBin: true
 
-  '@team-antioch/sc2-doodad-finder@0.1.2':
-    resolution: {integrity: sha512-U9WRI/GAk2O+YNRxa4ax/YzcqsFevHTGYBVLg2ivl8lDkFn3cAJankPYUxQ64f5ulP9SWg7THKs2uNWRletE+w==}
+  '@team-antioch/sc2-doodad-finder@0.2.0':
+    resolution: {integrity: sha512-mmKBBR2Vygp8gyuKHHKZw3Nq9anb9DWKQMkyicyQpzHyQ00LurBb77OZBYnzo2HPBhlDOedU4LQWHs2hiBIU+Q==}
     engines: {node: '>=22.18'}
     hasBin: true
+
+  '@team-antioch/sc2-finder-kit@0.2.0':
+    resolution: {integrity: sha512-iLE3UxcCyrcNfjscTkzWwSBWq8oYvyB0uRKsYmR5Vu2oZBljQFCKXM5OGDNNtUAZY+8/CAv/CvaYgSrOsDvt5A==}
+    engines: {node: '>=22.18'}
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -2699,14 +2706,22 @@ snapshots:
     dependencies:
       tslib: 2.9.1
 
-  '@team-antioch/sc2-asset-catalog@0.1.2':
+  '@team-antioch/sc2-asset-catalog@0.2.0':
     dependencies:
       zod: 4.6.7
 
-  '@team-antioch/sc2-doodad-finder@0.1.2(@types/node@20.19.43)':
+  '@team-antioch/sc2-doodad-finder@0.2.0(@types/node@20.19.43)':
+    dependencies:
+      '@team-antioch/sc2-asset-catalog': 0.2.0
+      '@team-antioch/sc2-finder-kit': 0.2.0(@types/node@20.19.43)
+      '@typesafe-ai/sdk': 0.7.0
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@team-antioch/sc2-finder-kit@0.2.0(@types/node@20.19.43)':
     dependencies:
       '@huggingface/transformers': 4.3.2(@types/node@20.19.43)
-      '@team-antioch/sc2-asset-catalog': 0.1.2
+      '@team-antioch/sc2-asset-catalog': 0.2.0
       '@typesafe-ai/sdk': 0.7.0
       zod: 4.6.7
     transitivePeerDependencies:

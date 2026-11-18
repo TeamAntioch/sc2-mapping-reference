@@ -12,8 +12,9 @@
   },
   "dependencies": {
     "@huggingface/transformers": "4.3.2",
-    "@team-antioch/sc2-asset-catalog": "0.1.2",
-    "@team-antioch/sc2-doodad-finder": "0.1.2",
+    "@team-antioch/sc2-asset-catalog": "^0.2.0",
+    "@team-antioch/sc2-doodad-finder": "^0.2.0",
+    "@team-antioch/sc2-finder-kit": "^0.2.0",
     "@types/lodash": "^4.17.7",
     "@upstash/ratelimit": "^2.2.1",
     "@upstash/redis": "^1.41.0",

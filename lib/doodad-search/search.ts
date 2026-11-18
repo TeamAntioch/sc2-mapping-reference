@@ -3,7 +3,13 @@
 // allows. It reads only what scripts/build-search-index.mjs wrote into .search/, so a request never
 // downloads the model or embeds the catalog, only its ask.
 //
-// The finder and Jev are opened once per function instance and kept.
+// An ask in another language is translated to English first (the catalog's words are English), when
+// VERCEL_API_GATEWAY_KEY is set: through the AI Gateway for other scripts, with a Jev language check
+// first for Latin-script asks that aren't made of the catalog's own words. English asks make no call.
+// A failed or slow translation leaves the ask as typed, so it can never stop a search.
+//
+// The finder, Jev, the translator and the language detector are opened once per function instance
+// and kept, and so are the translator's and detector's caches of what they were asked.
 
 import path from "node:path";
 
@@ -14,6 +20,12 @@ import {
   openFinder,
   vectorCacheFile,
 } from "@team-antioch/sc2-doodad-finder/finder.js";
+import {
+  cachingTranslator,
+  gatewayTranslator,
+} from "@team-antioch/sc2-finder-kit/gateway-translator.js";
+import { jevLanguageDetector } from "@team-antioch/sc2-finder-kit/jev-language-detector.js";
+import { cachingDetector } from "@team-antioch/sc2-finder-kit/language-detector.js";
 import { jevRanker } from "@team-antioch/sc2-doodad-finder/jev-ranker.js";
 import {
   orderByFit,
@@ -42,6 +54,8 @@ export type DoodadSearchAnswer = {
   readonly ranked: boolean;
   /** Why the ask wasn't ranked, when it wasn't. */
   readonly unranked?: string;
+  /** The ask in English, when it was in another language and was translated. */
+  readonly translated?: string;
   readonly ms: { readonly narrow: number; readonly rank?: number };
 };
 
@@ -62,20 +76,32 @@ async function open(): Promise<Opened> {
   const { env } = await import("@huggingface/transformers");
   env.allowRemoteModels = false;
   const embedder = await localEmbedder({ cacheDir: path.join(dir, "models") });
+  // No gateway key, no translator: asks are searched as typed. The detector is only for a
+  // translator to use, so it needs the TypeSafe key as well.
+  const apiKey = process.env.TYPESAFE_API_KEY?.trim();
+  const gatewayKey = process.env.VERCEL_API_GATEWAY_KEY?.trim();
+  const translator = gatewayKey
+    ? cachingTranslator(gatewayTranslator({ apiKey: gatewayKey }))
+    : undefined;
+  const languageDetector =
+    translator && apiKey
+      ? cachingDetector(jevLanguageDetector({ apiKey }))
+      : undefined;
   const finder = await openFinder({
     load: async () => readStockDoodadSources(sourcesOptions),
     embedder,
     cacheFile: vectorCacheFile(embedder.model, dir),
+    ...(translator ? { translator } : {}),
+    ...(languageDetector ? { languageDetector } : {}),
   });
   if (finder.embeddedOnOpen)
     console.warn(
       `[doodad-search] embedded ${finder.embeddedOnOpen} cards on open: .search/ is out of date`,
     );
-  const apiKey = process.env.TYPESAFE_API_KEY?.trim();
-  return {
-    finder,
-    ranker: apiKey ? jevRanker({ apiKey, timeout: JEV_TIMEOUT_MS }) : undefined,
-  };
+  const ranker = apiKey
+    ? jevRanker({ apiKey, timeout: JEV_TIMEOUT_MS })
+    : undefined;
+  return { finder, ranker };
 }
 
 let opening: Promise<Opened> | undefined;
@@ -112,7 +138,14 @@ export async function searchDoodads(
 ): Promise<DoodadSearchAnswer> {
   const ask = rawAsk.trim().slice(0, MAX_ASK_LENGTH);
   const { finder, ranker } = await opened();
-  const { candidates, timings } = await finder.narrow(ask);
+  const { candidates, timings, translation } = await finder.narrow(ask);
+  // A language check is paid for whatever happens to the ask after it.
+  if (translation?.detection && "cost" in translation.detection)
+    await budget.record(translation.detection.cost);
+  // What Jev ranks against: the English, when the ask was translated.
+  const rankAsk = translation?.english ?? ask;
+  const translated = translation?.translated ? translation.english : undefined;
+  const extra = translated !== undefined ? { translated } : {};
   const { doodads } = finder.sources;
   const hit = (id: string, name: string, level?: number): DoodadHit => {
     const image = doodads[id]?.image;
@@ -127,11 +160,17 @@ export async function searchDoodads(
     hits: candidates.map(({ id, card }) => hit(id, card.name)),
     ranked: false,
     unranked,
+    ...extra,
     ms: { narrow: timings.total, ...(rank !== undefined ? { rank } : {}) },
   });
 
   if (!candidates.length)
-    return { hits: [], ranked: false, ms: { narrow: timings.total } };
+    return {
+      hits: [],
+      ranked: false,
+      ...extra,
+      ms: { narrow: timings.total },
+    };
   if (!ranker)
     return narrowed(
       "no TypeSafe key is set, so results are in the narrowing's order",
@@ -142,7 +181,7 @@ export async function searchDoodads(
   const started = performance.now();
   try {
     const ranking = await ranker.rank(
-      { ask, candidates: candidates.map(({ card }) => card) },
+      { ask: rankAsk, candidates: candidates.map(({ card }) => card) },
       { signal: AbortSignal.timeout(JEV_TIMEOUT_MS) },
     );
     await budget.record(ranking.cost);
@@ -151,6 +190,7 @@ export async function searchDoodads(
         hit(id, card.name, level),
       ),
       ranked: true,
+      ...extra,
       ms: { narrow: timings.total, rank: performance.now() - started },
     };
   } catch (error) {
