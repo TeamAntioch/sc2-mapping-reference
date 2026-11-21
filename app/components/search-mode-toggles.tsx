@@ -6,10 +6,13 @@ import {
   useSearchModes,
 } from "@/lib/use-search-modes";
 
-const HELP =
+const DOODAD_HELP =
   "Exact matches are doodads whose name contains what you typed. Semantic matches are doodads whose description fits what you meant, even when the name doesn't contain your words. Exact matches are listed first.";
 
-export const SearchModeToggles: React.FC = () => {
+export const SearchModeToggles: React.FC<{
+  /** What exact and semantic matches are, for the "?" tooltip (the doodads' by default). */
+  help?: string;
+}> = ({ help = DOODAD_HELP }) => {
   const { modes, setMode } = useSearchModes();
   const { certainty, setCertainty } = useSearchCertainty();
   const box = (mode: "exact" | "semantic", label: string) => (
@@ -43,7 +46,7 @@ export const SearchModeToggles: React.FC = () => {
             role="tooltip"
             className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 border border-cyan-400/40 bg-slate-950 p-3 font-sans text-xs normal-case leading-relaxed tracking-normal text-sky-100 shadow-lg group-focus-within:block group-hover:block"
           >
-            {HELP}
+            {help}
           </span>
         </span>
       </div>

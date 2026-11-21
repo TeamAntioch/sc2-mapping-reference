@@ -6,7 +6,7 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 
-import { openLimits } from "@/lib/doodad-search/limits";
+import { openLimits } from "@/lib/search-limits";
 import { searchDoodads, warmDoodadSearch } from "@/lib/doodad-search/search";
 
 export const dynamic = "force-dynamic";

@@ -1,12 +1,16 @@
-// Builds what the doodad search route reads, into .search/ (git-ignored), before `next build`:
+// Builds what the doodad and set search routes read, into .search/ (git-ignored), before
+// `next build`:
 //
-//   .search/data/         the shipped descriptions and Doodad Uses, copied out of the package
+//   .search/data/         the shipped descriptions, Doodad Uses and set looks, copied out of the
+//                         package
 //   .search/extracted/    the catalog's fields, extracted from SC2GameData, with the gallery
 //                         listed from this checkout's public/doodads rather than GitHub's API
 //   .search/models/       the embeddings model's weights
-//   .search/vectors-*.bin every card embedded, so a request only embeds its ask
+//   .search/vectors-*.bin every doodad card embedded, so a request only embeds its ask
+//   .search/sets-vectors-*.bin
+//                         every set card embedded, likewise
 //
-// The route never downloads or embeds the catalog: everything it needs is here, and
+// Neither route downloads or embeds the catalog: everything it needs is here, and
 // next.config.mjs ships the folder with the function.
 
 import { cpSync, existsSync, readdirSync, rmSync } from "node:fs";
@@ -16,17 +20,24 @@ import { fileURLToPath } from "node:url";
 import {
   DOODAD_DESCRIPTIONS_PATH,
   DOODAD_USES_DIR,
+  SET_LOOKS_PATH,
 } from "@team-antioch/sc2-asset-catalog/catalog/catalog-dirs.js";
 import { readStockDoodadSources } from "@team-antioch/sc2-asset-catalog/catalog/doodad-search.js";
 import {
   extractCatalog,
   GALLERY_TREE_URL,
 } from "@team-antioch/sc2-asset-catalog/catalog/extract-catalog.js";
+import { readSetLooks } from "@team-antioch/sc2-asset-catalog/catalog/set-looks.js";
 import { localEmbedder } from "@team-antioch/sc2-doodad-finder/embedder.js";
 import {
   openFinder,
   vectorCacheFile,
 } from "@team-antioch/sc2-doodad-finder/finder.js";
+import {
+  openSetFinder,
+  setCards,
+  setVectorCacheFile,
+} from "@team-antioch/sc2-set-finder";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const out = path.join(root, ".search");
@@ -39,13 +50,15 @@ const log = (line) => console.log(`[search-index] ${line}`);
 rmSync(dataDir, { recursive: true, force: true });
 rmSync(extractedDir, { recursive: true, force: true });
 for (const file of existsSync(out) ? readdirSync(out) : [])
-  if (file.startsWith("vectors-")) rmSync(path.join(out, file));
+  if (file.startsWith("vectors-") || file.startsWith("sets-vectors-"))
+    rmSync(path.join(out, file));
 
 cpSync(
   DOODAD_DESCRIPTIONS_PATH,
   path.join(dataDir, "doodad-descriptions.json"),
 );
 cpSync(DOODAD_USES_DIR, path.join(dataDir, "doodad-uses"), { recursive: true });
+cpSync(SET_LOOKS_PATH, path.join(dataDir, "set-looks.json"));
 
 // The extractor lists the gallery through GitHub's API. Answer that one call from this checkout,
 // so the catalog matches the pictures being deployed and a build never meets the API's rate limit.
@@ -82,3 +95,21 @@ const finder = await openFinder({
 });
 log(`${finder.cards.size} cards, ${finder.embeddedOnOpen} embedded -> ${out}`);
 finder.close();
+
+// The sets: their cards' text doesn't depend on where the pictures are, so the vectors are the
+// route's whatever base it gives. Every set's pictures must be in public/sets.
+const looks = readSetLooks(path.join(dataDir, "set-looks.json"));
+const missing = [...looks.keys()].filter(
+  (id) => !existsSync(path.join(root, "public/sets", id)),
+);
+if (missing.length)
+  throw new Error(`No pictures in public/sets for: ${missing.join(", ")}`);
+const setFinder = await openSetFinder({
+  cards: setCards(looks, { base: "/sets" }),
+  embedder,
+  cacheFile: setVectorCacheFile(embedder.model, out),
+});
+log(
+  `${setFinder.cards.size} set cards, ${setFinder.embeddedOnOpen} embedded -> ${out}`,
+);
+setFinder.close();
