@@ -170,14 +170,17 @@ importers:
         specifier: 4.3.2
         version: 4.3.2(@types/node@20.19.43)
       '@team-antioch/sc2-asset-catalog':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0
+        version: 0.3.0
       '@team-antioch/sc2-doodad-finder':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/node@20.19.43)
+        specifier: 0.3.0
+        version: 0.3.0(@types/node@20.19.43)
       '@team-antioch/sc2-finder-kit':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/node@20.19.43)
+        specifier: 0.3.0
+        version: 0.3.0(@types/node@20.19.43)
+      '@team-antioch/sc2-set-finder':
+        specifier: 0.3.0
+        version: 0.3.0(@types/node@20.19.43)
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.27
@@ -726,19 +729,24 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@team-antioch/sc2-asset-catalog@0.2.0':
-    resolution: {integrity: sha512-c8mJ6kfoBpNjna1ifc6xsx3eNWLpNRlLXh/C7PKFEpl+nsHAKr8SzqLOYfp8CkPBW1IQlgi7hl0S6gmE3zZH/Q==}
+  '@team-antioch/sc2-asset-catalog@0.3.0':
+    resolution: {integrity: sha512-Fua8q81FWal1Dq33a7IsFT5tT8ILPbVhobz+eyVh2iQFf2kbwGGSXyXjkKvygT5GIZUAk6wikG3F8C/OUU8sKA==}
     engines: {node: '>=22.18'}
     hasBin: true
 
-  '@team-antioch/sc2-doodad-finder@0.2.0':
-    resolution: {integrity: sha512-mmKBBR2Vygp8gyuKHHKZw3Nq9anb9DWKQMkyicyQpzHyQ00LurBb77OZBYnzo2HPBhlDOedU4LQWHs2hiBIU+Q==}
+  '@team-antioch/sc2-doodad-finder@0.3.0':
+    resolution: {integrity: sha512-ihmgbew6Chm+UtvApA8tcemQ4XJQEy14eUW75Q3VfCcAG1qBvGF3ifBpm3ruiYcpl1j0lmG9KTp3SGI7u08P8w==}
     engines: {node: '>=22.18'}
     hasBin: true
 
-  '@team-antioch/sc2-finder-kit@0.2.0':
-    resolution: {integrity: sha512-iLE3UxcCyrcNfjscTkzWwSBWq8oYvyB0uRKsYmR5Vu2oZBljQFCKXM5OGDNNtUAZY+8/CAv/CvaYgSrOsDvt5A==}
+  '@team-antioch/sc2-finder-kit@0.3.0':
+    resolution: {integrity: sha512-sDK2JxPXbQWN5St6WqLgWyc2zQs/gpJ4a5Qb0I2zWvfPFh/3/cXtm92Pmji1GxzQ3yNqga1t8IfWgBp0NuRtaw==}
     engines: {node: '>=22.18'}
+
+  '@team-antioch/sc2-set-finder@0.3.0':
+    resolution: {integrity: sha512-2aLUHjCGQ1UlIY7lcN2yvEWyN+D7IrO+O8DyJ8Nln8rarkRx2uFcuGL9Wp88zEMH21gy7zILlUmXGV8kgG5pmQ==}
+    engines: {node: '>=22.18'}
+    hasBin: true
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -2706,24 +2714,31 @@ snapshots:
     dependencies:
       tslib: 2.9.1
 
-  '@team-antioch/sc2-asset-catalog@0.2.0':
+  '@team-antioch/sc2-asset-catalog@0.3.0':
     dependencies:
       zod: 4.6.7
 
-  '@team-antioch/sc2-doodad-finder@0.2.0(@types/node@20.19.43)':
+  '@team-antioch/sc2-doodad-finder@0.3.0(@types/node@20.19.43)':
     dependencies:
-      '@team-antioch/sc2-asset-catalog': 0.2.0
-      '@team-antioch/sc2-finder-kit': 0.2.0(@types/node@20.19.43)
+      '@team-antioch/sc2-asset-catalog': 0.3.0
+      '@team-antioch/sc2-finder-kit': 0.3.0(@types/node@20.19.43)
       '@typesafe-ai/sdk': 0.7.0
     transitivePeerDependencies:
       - '@types/node'
 
-  '@team-antioch/sc2-finder-kit@0.2.0(@types/node@20.19.43)':
+  '@team-antioch/sc2-finder-kit@0.3.0(@types/node@20.19.43)':
     dependencies:
       '@huggingface/transformers': 4.3.2(@types/node@20.19.43)
-      '@team-antioch/sc2-asset-catalog': 0.2.0
+      '@team-antioch/sc2-asset-catalog': 0.3.0
       '@typesafe-ai/sdk': 0.7.0
       zod: 4.6.7
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@team-antioch/sc2-set-finder@0.3.0(@types/node@20.19.43)':
+    dependencies:
+      '@team-antioch/sc2-asset-catalog': 0.3.0
+      '@team-antioch/sc2-finder-kit': 0.3.0(@types/node@20.19.43)
     transitivePeerDependencies:
       - '@types/node'
 
