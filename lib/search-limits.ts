@@ -1,6 +1,9 @@
-// What keeps the public doodad search from running up a bill or being hammered: a per-IP rate limit
-// on every ask, and a daily budget on Jev shared by every function instance. Both live in the
-// project's Upstash Redis (KV_REST_API_URL / KV_REST_API_TOKEN).
+// What keeps the public searches (doodads and sets) from running up a bill or being hammered: a
+// per-IP rate limit on every ask, and a daily budget on Jev shared by every function instance. Both
+// live in the project's Upstash Redis (KV_REST_API_URL / KV_REST_API_TOKEN), and both searches
+// count against the same ones: an IP's asks of either search share its limit, and the day's Jev
+// spend is one budget. The keys and variables keep their doodad-search names from before there
+// were two searches.
 //
 // The two fail differently when Redis can't be reached. The rate limit lets the ask through, since
 // narrowing costs nothing but compute. The budget refuses, so an outage never means unmetered Jev
@@ -107,7 +110,7 @@ export function openLimits(env: NodeJS.ProcessEnv = process.env): Limits {
             };
       } catch (error) {
         console.error(
-          "[doodad-search] rate limit unavailable, letting the ask through:",
+          "[search-limits] rate limit unavailable, letting the ask through:",
           error,
         );
         return { ok: true };
@@ -127,7 +130,7 @@ export function openLimits(env: NodeJS.ProcessEnv = process.env): Limits {
               };
         } catch (error) {
           console.error(
-            "[doodad-search] budget unavailable, not calling Jev:",
+            "[search-limits] budget unavailable, not calling Jev:",
             error,
           );
           return {
@@ -148,7 +151,7 @@ export function openLimits(env: NodeJS.ProcessEnv = process.env): Limits {
             .exec();
         } catch (error) {
           console.error(
-            `[doodad-search] couldn't record $${cost} of Jev spend:`,
+            `[search-limits] couldn't record $${cost} of Jev spend:`,
             error,
           );
         }

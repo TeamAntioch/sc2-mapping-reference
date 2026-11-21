@@ -33,7 +33,7 @@ import {
   RankerError,
 } from "@team-antioch/sc2-doodad-finder/ranker.js";
 
-import type { DailyBudget } from "./limits";
+import type { DailyBudget } from "@/lib/search-limits";
 
 /** The longest ask taken: anything past it is cut. */
 export const MAX_ASK_LENGTH = 200;

@@ -63,6 +63,7 @@ export const GalleryNav: React.FC<{}> = () => (
       <GalleryLink name="Doodads" url="doodads" />
       <GalleryLink name="Tilesets" url="tilesets" />
       <GalleryLink name="Terrain" url="terrain" />
+      <GalleryLink name="Sets" url="sets" />
       <div className="ml-auto flex items-center gap-3">
         <PalettePanelButton />
         <GitHubLink />
