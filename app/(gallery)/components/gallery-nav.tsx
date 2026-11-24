@@ -61,6 +61,7 @@ export const GalleryNav: React.FC<{}> = () => (
       </a>
       <GalleryLink name="Cliffs" url="cliffs" />
       <GalleryLink name="Doodads" url="doodads" />
+      <GalleryLink name="Effects" url="effects" />
       <GalleryLink name="Tilesets" url="tilesets" />
       <GalleryLink name="Terrain" url="terrain" />
       <GalleryLink name="Sets" url="sets" />

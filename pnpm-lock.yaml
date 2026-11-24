@@ -170,17 +170,20 @@ importers:
         specifier: 4.3.2
         version: 4.3.2(@types/node@20.19.43)
       '@team-antioch/sc2-asset-catalog':
-        specifier: 0.3.1
-        version: 0.3.1
+        specifier: 0.5.0
+        version: 0.5.0
       '@team-antioch/sc2-doodad-finder':
-        specifier: 0.3.1
-        version: 0.3.1(@types/node@20.19.43)
+        specifier: 0.5.0
+        version: 0.5.0(@types/node@20.19.43)
+      '@team-antioch/sc2-effect-finder':
+        specifier: 0.5.0
+        version: 0.5.0(@types/node@20.19.43)
       '@team-antioch/sc2-finder-kit':
-        specifier: 0.3.1
-        version: 0.3.1(@types/node@20.19.43)
+        specifier: 0.5.0
+        version: 0.5.0(@types/node@20.19.43)
       '@team-antioch/sc2-set-finder':
-        specifier: 0.3.1
-        version: 0.3.1(@types/node@20.19.43)
+        specifier: 0.5.0
+        version: 0.5.0(@types/node@20.19.43)
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.27
@@ -729,22 +732,26 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@team-antioch/sc2-asset-catalog@0.3.1':
-    resolution: {integrity: sha512-Q7yIm3QAxjJuXaGN4FXzmODdMBfM1RnCBylRmUhPmfkR2T1m4Ic2IzI3ehWYJINGQ53EMKkVi7OlgzCFfn8rDg==}
+  '@team-antioch/sc2-asset-catalog@0.5.0':
+    resolution: {integrity: sha512-VcHMfYEgRhF+9HDZ7+Ok4yDp/zKBJZPUW09z4oDMsEZP/JyIT33hi0lSG251iPx3OHlcs4kkoJZlqhTCmZkaQw==}
     engines: {node: '>=22.18'}
     hasBin: true
 
-  '@team-antioch/sc2-doodad-finder@0.3.1':
-    resolution: {integrity: sha512-Q192SFIzVVqwV/AYWEHyMZsm4GPa+30ZGI8CzGTYqrZzVQ6Y3pjax1Mw4zO9OnpfbpqqobLeMAajxey8tiTA6w==}
+  '@team-antioch/sc2-doodad-finder@0.5.0':
+    resolution: {integrity: sha512-eyCGO+FEtA+NJJsgYp7K9ixOxR52j2MUBHrTNz8fdF6D4XeHGgEDRg1bNDO8eTGd50Ub0TX7a5j6qjKTf3tpCA==}
     engines: {node: '>=22.18'}
     hasBin: true
 
-  '@team-antioch/sc2-finder-kit@0.3.1':
-    resolution: {integrity: sha512-gn+BnfgKY/eKIJcgoDJ+8764/6As/mUJZ5AyHC8LV+5q3siBUlVn8sHoN1rGg2BRgXtjnK5qrKK/Yrjr+lfSfQ==}
+  '@team-antioch/sc2-effect-finder@0.5.0':
+    resolution: {integrity: sha512-Fjw3dCHtg5TJtdcjS2u1bzIBK7WSdsIMp9b/oshQYLjOLWfsP2+nWJeb5OOLerx7Uzp9FhLxn4HbjtxLc5YpYQ==}
     engines: {node: '>=22.18'}
 
-  '@team-antioch/sc2-set-finder@0.3.1':
-    resolution: {integrity: sha512-OF3D1SaCpEwt4A6se8M4jnp/yocGSktpG5LiyBcfa4sGgtP5CwoiJSNga20qOFhx/5VrWGp5klicZUCyMApWzQ==}
+  '@team-antioch/sc2-finder-kit@0.5.0':
+    resolution: {integrity: sha512-19if6gt169Py6TS2aJ+sFDCS7tMIsidTWA4BrvI1S1QiWqzc3nX8IBiCzxrP/71tQ7yN7ZpXSYgHka0qR+tEMw==}
+    engines: {node: '>=22.18'}
+
+  '@team-antioch/sc2-set-finder@0.5.0':
+    resolution: {integrity: sha512-kL2j7B1xknroGIM6dP0R6ETZ9n9mHK4IMgJ6BtT14zq2pJkoCLjHowq8gUnTZ4VZnDZXuomYYimtN8xR3v/cvQ==}
     engines: {node: '>=22.18'}
     hasBin: true
 
@@ -2714,31 +2721,38 @@ snapshots:
     dependencies:
       tslib: 2.9.1
 
-  '@team-antioch/sc2-asset-catalog@0.3.1':
+  '@team-antioch/sc2-asset-catalog@0.5.0':
     dependencies:
       zod: 4.6.7
 
-  '@team-antioch/sc2-doodad-finder@0.3.1(@types/node@20.19.43)':
+  '@team-antioch/sc2-doodad-finder@0.5.0(@types/node@20.19.43)':
     dependencies:
-      '@team-antioch/sc2-asset-catalog': 0.3.1
-      '@team-antioch/sc2-finder-kit': 0.3.1(@types/node@20.19.43)
+      '@team-antioch/sc2-asset-catalog': 0.5.0
+      '@team-antioch/sc2-finder-kit': 0.5.0(@types/node@20.19.43)
       '@typesafe-ai/sdk': 0.7.0
     transitivePeerDependencies:
       - '@types/node'
 
-  '@team-antioch/sc2-finder-kit@0.3.1(@types/node@20.19.43)':
+  '@team-antioch/sc2-effect-finder@0.5.0(@types/node@20.19.43)':
+    dependencies:
+      '@team-antioch/sc2-asset-catalog': 0.5.0
+      '@team-antioch/sc2-finder-kit': 0.5.0(@types/node@20.19.43)
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@team-antioch/sc2-finder-kit@0.5.0(@types/node@20.19.43)':
     dependencies:
       '@huggingface/transformers': 4.3.2(@types/node@20.19.43)
-      '@team-antioch/sc2-asset-catalog': 0.3.1
+      '@team-antioch/sc2-asset-catalog': 0.5.0
       '@typesafe-ai/sdk': 0.7.0
       zod: 4.6.7
     transitivePeerDependencies:
       - '@types/node'
 
-  '@team-antioch/sc2-set-finder@0.3.1(@types/node@20.19.43)':
+  '@team-antioch/sc2-set-finder@0.5.0(@types/node@20.19.43)':
     dependencies:
-      '@team-antioch/sc2-asset-catalog': 0.3.1
-      '@team-antioch/sc2-finder-kit': 0.3.1(@types/node@20.19.43)
+      '@team-antioch/sc2-asset-catalog': 0.5.0
+      '@team-antioch/sc2-finder-kit': 0.5.0(@types/node@20.19.43)
     transitivePeerDependencies:
       - '@types/node'
 
