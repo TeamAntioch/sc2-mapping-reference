@@ -5,9 +5,10 @@
 //
 // For each effect of each batch filmed to its end (batch-NN/ with its index.html), takes its most
 // detailed picked frame (the largest JPEG in peaks/, the frame with most on screen), else its
-// stand still, else its first, and writes public/effects/<name>.jpg at 960 px wide and
-// <name>_tn.jpg, its middle half at 256 px, then app/(gallery)/effects/effect-list.ts. Needs ffmpeg. Replaces
-// public/effects.
+// stand still, else its first, and writes it at the model's path under Assets/Effects
+// (public/effects/Protoss/Blink/Blink.jpg, where sc2-asset-catalog's effectPictureUrl looks) at
+// 960 px wide, with Blink_tn.jpg, its middle half at 256 px; then app/(gallery)/effects/effect-list.ts.
+// Needs ffmpeg. Replaces public/effects.
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -54,9 +55,10 @@ for (const batch of readdirSync(tour).filter((name) => /^batch-\d+$/.test(name))
       return;
     }
     const segments = parts(effect.file);
-    const base = segments.join("_").replace(/[^A-Za-z0-9_-]/g, "_");
+    const base = effect.file.replace(/^Assets\/Effects\//, "").replace(/\.m3$/i, "");
     if (seen.has(base.toLowerCase())) throw new Error(`two effects would both be ${base}.jpg`);
     seen.add(base.toLowerCase());
+    mkdirSync(path.dirname(path.join(outDir, base)), { recursive: true });
     // The picture is the whole frame; the thumbnail its middle half, since the tour frames an
     // effect loosely and it always sits on the pad at the centre, a speck in a small tile otherwise.
     for (const [suffix, filter, quality] of [["", "scale=960:-2", 4], ["_tn", "crop=iw/2:ih/2,scale=256:-2", 5]]) {
