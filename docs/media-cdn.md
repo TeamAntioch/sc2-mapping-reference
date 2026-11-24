@@ -1,6 +1,6 @@
 # Media out of git: options and a plan
 
-Status: proposal, nothing built, nothing moved. Written 2026-11-24.
+Status: decided against, 2026-11-24. The media stays in `public/`. Hosting it there costs about $0 on Vercel Pro, and the move would add a store, a rewrite, a manifest and a catalog release to save cents a month. Kept as a record of the measurements and options, in case traffic or the repository's size changes that.
 
 ## The problem
 
