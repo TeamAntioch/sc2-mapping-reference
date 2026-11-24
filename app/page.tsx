@@ -1,5 +1,6 @@
 import cliffs from "@/app/(gallery)/cliffs/cliff-list";
 import doodads from "@/app/(gallery)/doodads/doodad-list";
+import effects from "@/app/(gallery)/effects/effect-list";
 import terrain from "@/app/(gallery)/terrain/terrain-list";
 import tilesets from "@/app/(gallery)/tilesets/tileset-list";
 import { GalleryLink } from "@/app/components/gallery-link";
@@ -25,6 +26,12 @@ const sections: {
     name: "Doodads",
     count: doodads.length,
     url: "/doodads",
+  },
+  {
+    imageUrl: `/effects/${effects[0].url}`,
+    name: "Effects",
+    count: effects.length,
+    url: "/effects",
   },
   {
     imageUrl: `/tilesets/${tilesets[0].url}`,
@@ -57,13 +64,13 @@ export default function Home() {
           Mapping Reference
         </h1>
         <p className="mt-3 max-w-xl text-slate-400">
-          Browse every cliff, doodad, tileset and terrain texture and the
+          Browse every cliff, doodad, effect, tileset and terrain texture and the
           campaign&apos;s cutscene sets, and search doodads and sets in plain
           words.
         </p>
         <div className="mt-6 h-px max-w-md bg-gradient-to-r from-cyan-400/70 to-transparent" />
       </header>
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {sections.map((section) => (
           <GalleryLink
             key={section.name}

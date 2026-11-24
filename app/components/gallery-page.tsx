@@ -27,6 +27,9 @@ type GalleryProps = {
   paletteEnabled?: boolean;
   /** Search in plain words through /api/doodad-search, in place of matching names. */
   rankedSearch?: boolean;
+  /** Every original picture's size in pixels, for the lightbox. */
+  pictureWidth?: number;
+  pictureHeight?: number;
 };
 
 const RANKED_HINT = (
@@ -64,6 +67,8 @@ const GalleryChildren: React.FC<GalleryProps> = ({
   slug,
   paletteEnabled = false,
   rankedSearch = false,
+  pictureWidth = 1168,
+  pictureHeight = 915,
 }) => {
   const { filter } = useContext(ItemFilterContext);
   const { modes } = useSearchModes();
@@ -91,8 +96,8 @@ const GalleryChildren: React.FC<GalleryProps> = ({
               key={getEntryKey(entry)}
               original={`/${slug}/${entry.url}`}
               thumbnail={`/${slug}/${getThumbnailUrl(entry.url)}`}
-              width={1168}
-              height={915}
+              width={pictureWidth}
+              height={pictureHeight}
             >
               {({ ref, open }) => (
                 <HudTile
