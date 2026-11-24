@@ -18,6 +18,7 @@ const nextConfig = {
     "@team-antioch/sc2-doodad-finder",
     "@team-antioch/sc2-finder-kit",
     "@team-antioch/sc2-set-finder",
+    "@team-antioch/sc2-effect-finder",
     "@huggingface/transformers",
     "onnxruntime-node",
     "sharp",
@@ -28,6 +29,11 @@ const nextConfig = {
     "/api/set-search": [
       "./.search/data/set-looks.json",
       "./.search/sets-vectors-*.bin",
+      ...MODEL_FILES,
+    ],
+    "/api/effect-search": [
+      "./.search/data/effect-looks.json",
+      "./.search/effects-vectors-*.bin",
       ...MODEL_FILES,
     ],
   },

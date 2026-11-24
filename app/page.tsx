@@ -1,13 +1,14 @@
 import cliffs from "@/app/(gallery)/cliffs/cliff-list";
 import doodads from "@/app/(gallery)/doodads/doodad-list";
-import effects from "@/app/(gallery)/effects/effect-list";
 import terrain from "@/app/(gallery)/terrain/terrain-list";
 import tilesets from "@/app/(gallery)/tilesets/tileset-list";
 import { GalleryLink } from "@/app/components/gallery-link";
+import { publishedEffects } from "@/lib/effect-search/effects";
 import { publishedSets } from "@/lib/set-search/sets";
 
 const sets = publishedSets();
 const firstSetPicture = sets[0].pictures[0] ?? sets[0].views[0];
+const effects = publishedEffects();
 
 const sections: {
   name: string;
@@ -28,7 +29,7 @@ const sections: {
     url: "/doodads",
   },
   {
-    imageUrl: `/effects/${effects[0].url}`,
+    imageUrl: effects[0].picture.url,
     name: "Effects",
     count: effects.length,
     url: "/effects",

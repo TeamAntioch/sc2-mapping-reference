@@ -1,16 +1,18 @@
-// Builds what the doodad and set search routes read, into .search/ (git-ignored), before
+// Builds what the doodad, set and effect search routes read, into .search/ (git-ignored), before
 // `next build`:
 //
-//   .search/data/         the shipped descriptions, Doodad Uses and set looks, copied out of the
-//                         package
+//   .search/data/         the shipped descriptions, Doodad Uses, set looks and effect looks,
+//                         copied out of the package
 //   .search/extracted/    the catalog's fields, extracted from SC2GameData, with the gallery
 //                         listed from this checkout's public/doodads rather than GitHub's API
 //   .search/models/       the embeddings model's weights
 //   .search/vectors-*.bin every doodad card embedded, so a request only embeds its ask
 //   .search/sets-vectors-*.bin
 //                         every set card embedded, likewise
+//   .search/effects-vectors-*.bin
+//                         every effect card embedded, likewise
 //
-// Neither route downloads or embeds the catalog: everything it needs is here, and
+// No route downloads or embeds the catalog: everything it needs is here, and
 // next.config.mjs ships the folder with the function.
 
 import { cpSync, existsSync, readdirSync, rmSync } from "node:fs";
@@ -20,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import {
   DOODAD_DESCRIPTIONS_PATH,
   DOODAD_USES_DIR,
+  EFFECT_LOOKS_PATH,
   SET_LOOKS_PATH,
 } from "@team-antioch/sc2-asset-catalog/catalog/catalog-dirs.js";
 import { readStockDoodadSources } from "@team-antioch/sc2-asset-catalog/catalog/doodad-search.js";
@@ -27,6 +30,7 @@ import {
   extractCatalog,
   GALLERY_TREE_URL,
 } from "@team-antioch/sc2-asset-catalog/catalog/extract-catalog.js";
+import { readEffectLooks } from "@team-antioch/sc2-asset-catalog/catalog/effect-looks.js";
 import { readSetLooks } from "@team-antioch/sc2-asset-catalog/catalog/set-looks.js";
 import { localEmbedder } from "@team-antioch/sc2-doodad-finder/embedder.js";
 import {
@@ -38,6 +42,11 @@ import {
   setCards,
   setVectorCacheFile,
 } from "@team-antioch/sc2-set-finder";
+import {
+  effectCards,
+  effectVectorCacheFile,
+  openEffectFinder,
+} from "@team-antioch/sc2-effect-finder";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const out = path.join(root, ".search");
@@ -50,7 +59,11 @@ const log = (line) => console.log(`[search-index] ${line}`);
 rmSync(dataDir, { recursive: true, force: true });
 rmSync(extractedDir, { recursive: true, force: true });
 for (const file of existsSync(out) ? readdirSync(out) : [])
-  if (file.startsWith("vectors-") || file.startsWith("sets-vectors-"))
+  if (
+    file.startsWith("vectors-") ||
+    file.startsWith("sets-vectors-") ||
+    file.startsWith("effects-vectors-")
+  )
     rmSync(path.join(out, file));
 
 cpSync(
@@ -59,6 +72,7 @@ cpSync(
 );
 cpSync(DOODAD_USES_DIR, path.join(dataDir, "doodad-uses"), { recursive: true });
 cpSync(SET_LOOKS_PATH, path.join(dataDir, "set-looks.json"));
+cpSync(EFFECT_LOOKS_PATH, path.join(dataDir, "effect-looks.json"));
 
 // The extractor lists the gallery through GitHub's API. Answer that one call from this checkout,
 // so the catalog matches the pictures being deployed and a build never meets the API's rate limit.
@@ -113,3 +127,29 @@ log(
   `${setFinder.cards.size} set cards, ${setFinder.embeddedOnOpen} embedded -> ${out}`,
 );
 setFinder.close();
+
+// The effects, likewise. Every effect's media must be in public/effects, at its model's path.
+const effectLooks = readEffectLooks(path.join(dataDir, "effect-looks.json"));
+const noMedia = [...effectLooks.keys()].filter(
+  (file) =>
+    !existsSync(
+      path.join(
+        root,
+        "public/effects",
+        `${file.replace(/^Assets\/Effects\//, "").replace(/\.m3$/i, "")}.jpg`,
+      ),
+    ),
+);
+if (noMedia.length)
+  throw new Error(
+    `No picture in public/effects for ${noMedia.length} effects, such as ${noMedia.slice(0, 3).join(", ")}`,
+  );
+const effectFinder = await openEffectFinder({
+  cards: effectCards(effectLooks, { base: "/effects" }),
+  embedder,
+  cacheFile: effectVectorCacheFile(embedder.model, out),
+});
+log(
+  `${effectFinder.cards.size} effect cards, ${effectFinder.embeddedOnOpen} embedded -> ${out}`,
+);
+effectFinder.close();

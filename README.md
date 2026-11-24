@@ -36,6 +36,13 @@ Live site: see the repository's "About" link. Source:
   places in it, how sure the look is and what is wrong with its pictures, and the
   Cutscene Editor files it is in; then each picture (a Blender render) beside the
   same view filmed in game, and the set's plan and overview, in the lightbox.
+- **Effects, filmed in game.** The Effects page lists the game's 1,313 effect
+  models (`Assets/Effects`), each filmed in the game on a Marine. Describe what you
+  want ("a purple psionic blast", "burning ground") and the effects whose looks fit
+  come first, as in the set search, with kind chips (burst, beam, aura, ...).
+  Opening one shows its clip looping, its key frames (the recording's frames with
+  most on screen, and stills of its birth, stand, moving host and destroy), what it
+  looks like, and its model path to copy. `#<path>` links to an opened effect.
 - **Doodad palette.** Collect doodads in a side panel while you browse, so you
   have a shortlist to build from. It is also kept in `localStorage`.
 - A sci-fi console look, built with Tailwind CSS.
@@ -107,17 +114,25 @@ in-game frame `card/<n>-game.jpg`, `plan.jpg` and `overview.jpg`, each with a
 `data/set-looks.json`. The Sets page and each set's page are built from the looks
 at build time, with the pictures served from this site.
 
+**Effects.** The effects' media are in `public/effects/`, at each model's path
+under `Assets/Effects` (`Protoss/Blink/Blink.jpg` and its `_tn`, `.mp4` and
+`-frames.jpg` strip of key frames), with `media.json` naming each strip's frames.
+`scripts/import-effects.mjs <tour folder>` makes them from sc2-adjutant's effect
+tour. Their names and looks come from `@team-antioch/sc2-asset-catalog`'s
+`data/effect-looks.json`.
+
 **Search index.** `pnpm build-search-index` (run by `pnpm build`) runs
 `scripts/build-search-index.mjs`, which writes `.search/` (git-ignored):
 
-1. copies the shipped doodad descriptions, "Doodad Uses" and set looks out of
+1. copies the shipped doodad descriptions, "Doodad Uses", set looks and effect looks out of
    [`@team-antioch/sc2-asset-catalog`](https://github.com/TeamAntioch/sc2-asset-catalog);
 2. extracts the catalog's fields (names, packages, categories, tilesets) from
    SC2Mapster's SC2GameData, listing the gallery from this checkout's
    `public/doodads` so the catalog matches the pictures being deployed;
 3. downloads the gte-small embeddings model;
-4. embeds every doodad card and every set card, so a request only has to embed
-   its own ask. It stops if a set has no folder in `public/sets`.
+4. embeds every doodad, set and effect card, so a request only has to embed
+   its own ask. It stops if a set has no folder in `public/sets`, or an effect no
+   picture in `public/effects`.
 
 At run time `GET /api/doodad-search?q=<ask>` reads only `.search/`. It narrows
 candidates by keyword and embeddings
@@ -126,9 +141,12 @@ then has Jev grade them when the key and budget allow.
 
 `GET /api/set-search?q=<ask>` does the same for sets with
 [`@team-antioch/sc2-set-finder`](https://github.com/TeamAntioch/sc2-asset-catalog),
-cut to the best 24; `&kind=room,exterior` keeps only those kinds. Both routes
+cut to the best 24; `&kind=room,exterior` keeps only those kinds.
+`GET /api/effect-search?q=<ask>` does it for effects with
+[`@team-antioch/sc2-effect-finder`](https://github.com/TeamAntioch/sc2-asset-catalog),
+cut to the best 30, with `&kind=burst,beam`. The routes
 translate asks in other languages first (with `VERCEL_API_GATEWAY_KEY`), and
-share one per-IP rate limit and one daily Jev budget. `?warm` loads either
+share one per-IP rate limit and one daily Jev budget. `?warm` loads any
 search without asking anything. `next.config.mjs` ships each route's part of
 `.search/` and ONNX Runtime's Linux addon with it, for Vercel.
 
