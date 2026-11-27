@@ -5,18 +5,25 @@ import {
   ItemFilterContext,
   ItemFilterProvider,
 } from "@/app/components/item-filter";
+import { AdvancedSettings } from "@/app/components/advanced-settings";
 import { HudTile } from "@/app/components/hud-tile";
 import { SearchModeToggles } from "@/app/components/search-mode-toggles";
 import { PaletteToggle } from "@/app/components/palette-toggle";
+import { TileSizeSlider } from "@/app/components/tile-size-slider";
 import {
   RankedStatus,
   useRankedItems,
 } from "@/app/components/use-ranked-items";
 import { getEntryKey } from "@/lib/get-entry-key";
-import { getThumbnailUrl } from "@/lib/get-thumbnail-url";
+import { getMediumUrl, getThumbnailUrl } from "@/lib/get-thumbnail-url";
 import { GalleryEntry } from "@/lib/types";
 import { useJevGrades } from "@/lib/use-jev-grades";
 import { useSearchCertainty, useSearchModes } from "@/lib/use-search-modes";
+import {
+  THUMBNAIL_MAX_WIDTH,
+  TILE_SIZE_STEPS,
+  useTileSize,
+} from "@/lib/use-tile-size";
 import { useContext } from "react";
 import { Gallery, Item } from "react-photoswipe-gallery";
 
@@ -75,22 +82,39 @@ const GalleryChildren: React.FC<GalleryProps> = ({
     levels,
   } = useRankedItems(items, filter, rankedSearch, modes, minLevel);
   const note = statusText(status);
+  const { step } = useTileSize();
+  const { minWidth } = TILE_SIZE_STEPS[step];
+  const tileUrl = (url: string) =>
+    `/${slug}/${minWidth > THUMBNAIL_MAX_WIDTH ? getMediumUrl(url) : getThumbnailUrl(url)}`;
   return (
     <>
-      {rankedSearch && <SearchModeToggles />}
+      {rankedSearch ? (
+        <SearchModeToggles>
+          <TileSizeSlider />
+        </SearchModeToggles>
+      ) : (
+        <AdvancedSettings>
+          <TileSizeSlider />
+        </AdvancedSettings>
+      )}
       {note && (
         <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
           {note}
         </p>
       )}
-      <section className="grid grid-cols-auto-fill-100 gap-8 items-start">
+      <section
+        className="grid gap-8 items-start"
+        style={{
+          gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}px, 1fr))`,
+        }}
+      >
         <Gallery>
           {filteredItems.map((entry) => (
             <Item
               key={getEntryKey(entry)}
               original={`/${slug}/${entry.url}`}
-              thumbnail={`/${slug}/${getThumbnailUrl(entry.url)}`}
+              thumbnail={tileUrl(entry.url)}
               width={1168}
               height={915}
             >
@@ -98,7 +122,7 @@ const GalleryChildren: React.FC<GalleryProps> = ({
                 <HudTile
                   ref={ref}
                   onClick={open}
-                  src={`/${slug}/${getThumbnailUrl(entry.url)}`}
+                  src={tileUrl(entry.url)}
                   name={entry.name}
                   badge={
                     <>
