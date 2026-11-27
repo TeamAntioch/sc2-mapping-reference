@@ -7,3 +7,6 @@ export const getThumbnailUrl = (url: string) => {
   }
   return url.replace(".gif", "_tn.gif");
 };
+
+/** The middle-sized thumbnail (512 px wide, or the picture's own width if narrower), always a JPEG. */
+export const getMediumUrl = (url: string) => url.replace(/\.(jpg|png|gif)$/, "_md.jpg");

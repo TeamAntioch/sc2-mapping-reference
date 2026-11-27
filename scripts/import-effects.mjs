@@ -4,8 +4,8 @@
 //
 //   node scripts/import-effects.mjs [--jobs N] [--threads N] <tour folder>
 //
-// --pictures-only remakes the pictures, thumbnails, strips and media.json and leaves the clips as
-// they are, so a change to the pictures doesn't put another copy of the clips in git.
+// --pictures-only remakes the pictures, thumbnails (_tn and _md), strips and media.json and leaves
+// the clips as they are, so a change to the pictures doesn't put another copy of the clips in git.
 //
 // --jobs is how many ffmpegs run at once (default: the cores less two), and --threads how many
 // threads each encoder may use (default: ffmpeg's own choice, every core). Lower both to share the
@@ -21,6 +21,8 @@
 //                                   ribbon model's frame picked during the move is cut around the
 //                                   host instead: the camera follows it there, three quarters
 //                                   across, with the trail behind it
+//   Protoss/Blink/Blink_md.jpg      the same cut at up to 512 px (never enlarged), for a grid whose
+//                                   thumbnails can be made bigger than the _tn
 //   Protoss/Blink/Blink.mp4         its clip, as H.264 so every browser plays it, at the tour's
 //                                   size and CRF 23: CRF 28 washes out sparks and thin trails
 //   Protoss/Blink/Blink-frames.jpg  its key frames side by side, 960 x 540 each, as sharp as the
@@ -139,6 +141,7 @@ for (const batch of readdirSync(tour).filter((name) => /^batch-\d+$/.test(name))
     jobs.push(["-i", source, "-vf", "scale=960:-2", "-q:v", "4", `${target}.jpg`]);
     const sourceCrop = biggest ? pickedCrop(biggest) : CROP.middle;
     jobs.push(["-i", source, "-vf", `${sourceCrop},scale=256:-2`, "-q:v", "5", `${target}_tn.jpg`]);
+    jobs.push(["-i", source, "-vf", `${sourceCrop},scale='min(512,iw)':-2`, "-q:v", "4", `${target}_md.jpg`]);
     if (existsSync(clip) && !picturesOnly) jobs.push(["-i", clip, "-an", "-c:v", "libx264", ...threads, "-crf", "23", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${target}.mp4`]);
     const scale = `scale=${FRAME.width}:${FRAME.height}`;
     const filters = frames.map(({ crop }, k) => `[${k}]${crop ? `${crop},` : ""}${scale}[f${k}]`);

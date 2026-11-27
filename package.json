@@ -8,7 +8,8 @@
     "build": "node scripts/build-search-index.mjs && next build",
     "start": "next start",
     "lint": "eslint app lib",
-    "build-search-index": "node scripts/build-search-index.mjs"
+    "build-search-index": "node scripts/build-search-index.mjs",
+    "make-medium-thumbnails": "node scripts/make-medium-thumbnails.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "4.3.2",
@@ -35,6 +36,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "sharp": "0.35.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   },
