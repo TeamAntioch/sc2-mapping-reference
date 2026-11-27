@@ -23,7 +23,12 @@ export const HudTile = React.forwardRef<
     <div className="clip-corner flex flex-col bg-sky-400/35 p-px transition-colors group-hover:bg-cyan-400">
       <div className="clip-corner flex flex-col bg-slate-900 p-1">
         <div className="relative">
-          <img src={src} alt={name} className="block w-full" />
+          <img
+            src={src}
+            alt={name}
+            loading="lazy"
+            className="block w-full"
+          />
           {badge}
         </div>
         <div className="break-words px-0.5 pb-0.5 pt-1.5 font-display text-[11px] uppercase leading-tight tracking-wider text-sky-200 transition-colors group-hover:text-cyan-200">
