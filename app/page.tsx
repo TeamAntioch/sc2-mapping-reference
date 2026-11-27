@@ -3,6 +3,7 @@ import doodads from "@/app/(gallery)/doodads/doodad-list";
 import terrain from "@/app/(gallery)/terrain/terrain-list";
 import tilesets from "@/app/(gallery)/tilesets/tileset-list";
 import { GalleryLink } from "@/app/components/gallery-link";
+import { getMediumUrl } from "@/lib/get-thumbnail-url";
 import { publishedEffects } from "@/lib/effect-search/effects";
 import { publishedSets } from "@/lib/set-search/sets";
 
@@ -14,16 +15,20 @@ const sections: {
   name: string;
   url: string;
   imageUrl: string;
+  /** Effects have no medium thumbnails until their next import, so their card uses the full size. */
+  mediumUrl?: string;
   count: number;
 }[] = [
   {
     imageUrl: `/cliffs/${cliffs[0].url}`,
+    mediumUrl: `/cliffs/${getMediumUrl(cliffs[0].url)}`,
     name: "Cliffs",
     count: cliffs.length,
     url: "/cliffs",
   },
   {
     imageUrl: `/doodads/${doodads[0].url}`,
+    mediumUrl: `/doodads/${getMediumUrl(doodads[0].url)}`,
     name: "Doodads",
     count: doodads.length,
     url: "/doodads",
@@ -36,18 +41,21 @@ const sections: {
   },
   {
     imageUrl: `/tilesets/${tilesets[0].url}`,
+    mediumUrl: `/tilesets/${getMediumUrl(tilesets[0].url)}`,
     name: "Tilesets",
     count: tilesets.length,
     url: "/tilesets",
   },
   {
     imageUrl: `/terrain/${terrain[0].url}`,
+    mediumUrl: `/terrain/${getMediumUrl(terrain[0].url)}`,
     name: "Terrain",
     count: terrain.length,
     url: "/terrain",
   },
   {
     imageUrl: firstSetPicture.url,
+    mediumUrl: getMediumUrl(firstSetPicture.url),
     name: "Sets",
     count: sets.length,
     url: "/sets",
@@ -77,6 +85,7 @@ export default function Home() {
             key={section.name}
             name={section.name}
             imageUrl={section.imageUrl}
+            mediumUrl={section.mediumUrl}
             url={section.url}
             count={section.count}
           />
