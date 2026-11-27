@@ -5,6 +5,7 @@ import {
   ItemFilterContext,
   ItemFilterProvider,
 } from "@/app/components/item-filter";
+import { AdvancedSettings } from "@/app/components/advanced-settings";
 import { HudTile } from "@/app/components/hud-tile";
 import { SearchModeToggles } from "@/app/components/search-mode-toggles";
 import { PaletteToggle } from "@/app/components/palette-toggle";
@@ -87,14 +88,21 @@ const GalleryChildren: React.FC<GalleryProps> = ({
     `/${slug}/${minWidth > THUMBNAIL_MAX_WIDTH ? getMediumUrl(url) : getThumbnailUrl(url)}`;
   return (
     <>
-      {rankedSearch && <SearchModeToggles />}
+      {rankedSearch ? (
+        <SearchModeToggles>
+          <TileSizeSlider />
+        </SearchModeToggles>
+      ) : (
+        <AdvancedSettings>
+          <TileSizeSlider />
+        </AdvancedSettings>
+      )}
       {note && (
         <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
           {note}
         </p>
       )}
-      <TileSizeSlider />
       <section
         className="grid gap-8 items-start"
         style={{

@@ -7,7 +7,7 @@ export const TileSizeSlider: React.FC = () => {
   const { step, setStep } = useTileSize();
   const last = TILE_SIZE_STEPS.length - 1;
   return (
-    <div className="mb-4 max-w-md font-display text-xs tracking-wide">
+    <div className="font-display text-xs tracking-wide">
       <label className="flex items-center justify-between text-sky-200/80">
         <span>Thumbnail size</span>
         <span className="text-cyan-300">{TILE_SIZE_STEPS[step].label}</span>
