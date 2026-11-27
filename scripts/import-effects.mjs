@@ -2,7 +2,11 @@
 // into public/effects, at each model's path under Assets/Effects, where sc2-asset-catalog's
 // effectPictureUrl looks:
 //
-//   node scripts/import-effects.mjs <tour folder>
+//   node scripts/import-effects.mjs [--jobs N] [--threads N] <tour folder>
+//
+// --jobs is how many ffmpegs run at once (default: the cores less two), and --threads how many
+// threads each encoder may use (default: ffmpeg's own choice, every core). Lower both to share the
+// machine, for example while the game is filming.
 //
 // For each effect of each batch filmed to its end (batch-NN/ with its index.html):
 //
@@ -11,8 +15,10 @@
 //                                   else its first, at 960 px wide
 //   Protoss/Blink/Blink_tn.jpg      the picture's middle half at 256 px: the tour frames an effect
 //                                   loosely, and it always sits on the pad at the centre
-//   Protoss/Blink/Blink.mp4         its clip, as H.264 so every browser plays it
-//   Protoss/Blink/Blink-frames.jpg  its key frames side by side, 480 x 270 each: the picked frames
+//   Protoss/Blink/Blink.mp4         its clip, as H.264 so every browser plays it, at the tour's
+//                                   size and CRF 23: CRF 28 washes out sparks and thin trails
+//   Protoss/Blink/Blink-frames.jpg  its key frames side by side, 960 x 540 each, as sharp as the
+//                                   picture when one is shown in the clip's place: the picked frames
 //                                   and the birth, stand and death stills cropped to their middle
 //                                   half, the moving and after-destroy stills whole
 //
@@ -25,12 +31,18 @@ import { execFile } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { availableParallelism } from "node:os";
 import path from "node:path";
-import { promisify } from "node:util";
+import { parseArgs, promisify } from "node:util";
 
 const run = promisify(execFile);
-const tour = process.argv[2];
-if (!tour) {
-  console.error("Usage: node scripts/import-effects.mjs <tour folder>");
+const { values: options, positionals } = parseArgs({
+  options: { jobs: { type: "string" }, threads: { type: "string" } },
+  allowPositionals: true,
+});
+const tour = positionals[0];
+const parallel = options.jobs ? Number(options.jobs) : Math.max(1, availableParallelism() - 2);
+const threads = options.threads ? ["-threads", options.threads] : [];
+if (!tour || !(parallel >= 1) || (options.threads && !(Number(options.threads) >= 1))) {
+  console.error("Usage: node scripts/import-effects.mjs [--jobs N] [--threads N] <tour folder>");
   process.exit(1);
 }
 const root = path.resolve(import.meta.dirname, "..");
@@ -39,7 +51,7 @@ rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
 const pad = (n) => String(n).padStart(4, "0");
-const FRAME = { width: 480, height: 270 };
+const FRAME = { width: 960, height: 540 };
 /** The stills shown whole: the host has slid out of the middle by then. */
 const WHOLE = new Set(["moving", "after-destroy"]);
 
@@ -92,7 +104,7 @@ for (const batch of readdirSync(tour).filter((name) => /^batch-\d+$/.test(name))
 
     jobs.push(["-i", source, "-vf", "scale=960:-2", "-q:v", "4", `${target}.jpg`]);
     jobs.push(["-i", source, "-vf", "crop=iw/2:ih/2,scale=256:-2", "-q:v", "5", `${target}_tn.jpg`]);
-    if (existsSync(clip)) jobs.push(["-i", clip, "-an", "-c:v", "libx264", "-crf", "28", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${target}.mp4`]);
+    if (existsSync(clip)) jobs.push(["-i", clip, "-an", "-c:v", "libx264", ...threads, "-crf", "23", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", `${target}.mp4`]);
     const scale = `scale=${FRAME.width}:${FRAME.height}`;
     const filters = frames.map(({ crop }, k) => `[${k}]${crop ? "crop=iw/2:ih/2," : ""}${scale}[f${k}]`);
     const stack = frames.length > 1 ? `${frames.map((_, k) => `[f${k}]`).join("")}hstack=inputs=${frames.length}` : "[f0]null";
@@ -103,7 +115,7 @@ for (const batch of readdirSync(tour).filter((name) => /^batch-\d+$/.test(name))
 let done = 0;
 const queue = [...jobs];
 await Promise.all(
-  Array.from({ length: Math.max(1, availableParallelism() - 2) }, async () => {
+  Array.from({ length: parallel }, async () => {
     for (let args = queue.shift(); args; args = queue.shift()) {
       await run("ffmpeg", ["-loglevel", "error", "-y", ...args]);
       if (++done % 1000 === 0) console.log(`${done} of ${jobs.length} files`);
