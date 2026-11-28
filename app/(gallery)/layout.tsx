@@ -7,7 +7,7 @@ const GalleryLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
   <>
     <PaletteOffset>
       <GalleryNav />
-      <main className="px-4 py-6 sm:px-6">
+      <main className="pb-6">
         <Suspense>{children}</Suspense>
       </main>
     </PaletteOffset>

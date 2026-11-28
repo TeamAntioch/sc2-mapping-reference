@@ -2,7 +2,7 @@
 export const AdvancedSettings: React.FC<React.PropsWithChildren> = ({
   children,
 }) => (
-  <details className="group/advanced mb-4 max-w-md font-display text-xs tracking-wide">
+  <details className="group/advanced w-full font-display text-xs tracking-wide">
     <summary className="flex cursor-pointer list-none items-center gap-2 uppercase text-cyan-300 transition-colors hover:text-cyan-100 focus-visible:text-cyan-100 focus-visible:outline-none [&::-webkit-details-marker]:hidden">
       <span
         aria-hidden

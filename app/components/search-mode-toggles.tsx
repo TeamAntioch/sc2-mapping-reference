@@ -34,7 +34,7 @@ export const SearchModeToggles: React.FC<
   );
   return (
     <>
-      <div className="mb-4 font-display text-xs tracking-wide">
+      <div className="mb-3 font-display text-xs tracking-wide">
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           {box("exact", "Show exact matches")}
           {box("semantic", "Show semantic matches")}

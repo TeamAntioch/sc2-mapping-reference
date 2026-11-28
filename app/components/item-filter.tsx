@@ -72,15 +72,20 @@ export const ItemFilterProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
 const COMMA_HINT = (
   <>
-    Hint: You can search for multiple terms by separating each term with a
+    You can search for multiple terms by separating each term with a
     comma. For example: &quot;zerg, creep&quot; to search anything that contains
     either &quot;zerg&quot; or &quot;creep&quot;.
   </>
 );
 
-export const ItemFilter: React.FC<{ hint?: React.ReactNode }> = ({
-  hint = COMMA_HINT,
-}) => {
+/**
+ * The gallery toolbar: the search box on the left, the hint in the middle, and any controls
+ * (such as the Advanced section) on the right. The three stack on narrow screens.
+ */
+export const ItemFilter: React.FC<{
+  hint?: React.ReactNode;
+  controls?: React.ReactNode;
+}> = ({ hint = COMMA_HINT, controls }) => {
   const { filter, setFilter } = useContext(ItemFilterContext);
   const [localFilter, setLocalFilter] = useState(filter);
   const clear = () => {
@@ -88,10 +93,10 @@ export const ItemFilter: React.FC<{ hint?: React.ReactNode }> = ({
     setFilter("");
   };
   return (
-    <section className="mb-6">
+    <section className="mb-1 flex flex-col gap-4 border-b border-cyan-400/15 bg-slate-950/40 px-3 py-4 sm:px-5 lg:flex-row lg:items-start lg:gap-8">
       <form
         role="search"
-        className="flex max-w-2xl items-stretch gap-2"
+        className="flex w-full items-stretch gap-2 lg:max-w-2xl lg:basis-[36%]"
         onSubmit={(e) => {
           e.preventDefault();
           setFilter(localFilter);
@@ -134,9 +139,11 @@ export const ItemFilter: React.FC<{ hint?: React.ReactNode }> = ({
           Search
         </button>
       </form>
-      <div className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-500">
+      <div className="max-w-2xl flex-1 text-xs leading-relaxed text-slate-500">
+        <p className="font-semibold text-slate-400">Hint:</p>
         {hint}
       </div>
+      {controls && <div className="w-full lg:w-96 lg:shrink-0">{controls}</div>}
     </section>
   );
 };

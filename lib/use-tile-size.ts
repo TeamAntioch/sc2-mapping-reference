@@ -21,8 +21,14 @@ export const TILE_SIZE_STEPS = [
  */
 export const THUMBNAIL_MAX_WIDTH = 128;
 
-/** Medium: one step up from the old size, so tiles open with the sharper medium thumbnails. */
-const DEFAULT_TILE_SIZE = 1;
+/**
+ * The narrowest column that fits a full tile. Narrower tiles use a smaller name, and the
+ * Effects and Sets cards show only the picture and name.
+ */
+export const CARD_DETAIL_MIN_WIDTH = 200;
+
+/** Larger: seven columns on a 1920 px screen, as in the gallery mockup. */
+const DEFAULT_TILE_SIZE = 3;
 
 const tileSizeStore = createLocalStorageStore<number>(
   "sc2-mapping-reference:tile-size",
