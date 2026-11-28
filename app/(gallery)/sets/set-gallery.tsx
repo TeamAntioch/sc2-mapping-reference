@@ -166,9 +166,8 @@ const SetResults: React.FC<{
   } = useRankedSets(sets, filter, picked, modes, minLevel);
   const note = statusText(status);
   return (
-    <>
+    <div className="px-3 pt-3 sm:px-5">
       <KindChips kinds={kinds} picked={picked} toggle={toggle} />
-      <SearchModeToggles help={HELP} />
       {note && (
         <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
@@ -189,7 +188,7 @@ const SetResults: React.FC<{
           />
         ))}
       </section>
-    </>
+    </div>
   );
 };
 
@@ -199,7 +198,10 @@ export const SetGallery: React.FC<{
 }> = ({ sets, kinds }) => (
   <section>
     <ItemFilterProvider>
-      <ItemFilter hint={HINT} />
+      <ItemFilter
+        hint={HINT}
+        controls={<SearchModeToggles help={HELP} />}
+      />
       <SetResults sets={sets} kinds={kinds} />
     </ItemFilterProvider>
     <SearchWarmup route="/api/set-search" />

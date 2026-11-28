@@ -6,7 +6,7 @@ import {
   ItemFilterProvider,
 } from "@/app/components/item-filter";
 import { AdvancedSettings } from "@/app/components/advanced-settings";
-import { HudTile } from "@/app/components/hud-tile";
+import { GalleryTile } from "@/app/components/gallery-tile";
 import { SearchModeToggles } from "@/app/components/search-mode-toggles";
 import { PaletteToggle } from "@/app/components/palette-toggle";
 import { TileSizeSlider } from "@/app/components/tile-size-slider";
@@ -88,23 +88,14 @@ const GalleryChildren: React.FC<GalleryProps> = ({
     `/${slug}/${minWidth > THUMBNAIL_MAX_WIDTH ? getMediumUrl(url) : getThumbnailUrl(url)}`;
   return (
     <>
-      {rankedSearch ? (
-        <SearchModeToggles>
-          <TileSizeSlider />
-        </SearchModeToggles>
-      ) : (
-        <AdvancedSettings>
-          <TileSizeSlider />
-        </AdvancedSettings>
-      )}
       {note && (
-        <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
+        <p className="mx-1.5 mb-2 mt-2 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
           {note}
         </p>
       )}
       <section
-        className="grid gap-8 items-start"
+        className="grid gap-2 px-2"
         style={{
           gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}px, 1fr))`,
         }}
@@ -119,7 +110,7 @@ const GalleryChildren: React.FC<GalleryProps> = ({
               height={915}
             >
               {({ ref, open }) => (
-                <HudTile
+                <GalleryTile
                   ref={ref}
                   onClick={open}
                   src={tileUrl(entry.url)}
@@ -153,7 +144,20 @@ export const GalleryPage: React.FC<GalleryProps> = (props) => {
   return (
     <section>
       <ItemFilterProvider>
-        <ItemFilter {...(props.rankedSearch ? { hint: RANKED_HINT } : {})} />
+        <ItemFilter
+          {...(props.rankedSearch ? { hint: RANKED_HINT } : {})}
+          controls={
+            props.rankedSearch ? (
+              <SearchModeToggles>
+                <TileSizeSlider />
+              </SearchModeToggles>
+            ) : (
+              <AdvancedSettings>
+                <TileSizeSlider />
+              </AdvancedSettings>
+            )
+          }
+        />
         <GalleryChildren {...props} />
       </ItemFilterProvider>
     </section>

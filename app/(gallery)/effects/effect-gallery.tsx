@@ -198,9 +198,8 @@ const EffectResults: React.FC<{
   }, []);
 
   return (
-    <>
+    <div className="px-3 pt-3 sm:px-5">
       <KindChips kinds={kinds} picked={picked} toggle={toggle} />
-      <SearchModeToggles help={HELP} />
       {note && (
         <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
           <span className="text-cyan-400/80">{"// "}</span>
@@ -223,7 +222,7 @@ const EffectResults: React.FC<{
         ))}
       </section>
       <EffectViewer effect={byMedia.get(opened)} onClose={close} />
-    </>
+    </div>
   );
 };
 
@@ -233,7 +232,10 @@ export const EffectGallery: React.FC<{
 }> = ({ effects, kinds }) => (
   <section>
     <ItemFilterProvider>
-      <ItemFilter hint={HINT} />
+      <ItemFilter
+        hint={HINT}
+        controls={<SearchModeToggles help={HELP} />}
+      />
       <EffectResults effects={effects} kinds={kinds} />
     </ItemFilterProvider>
     <SearchWarmup route="/api/effect-search" />
