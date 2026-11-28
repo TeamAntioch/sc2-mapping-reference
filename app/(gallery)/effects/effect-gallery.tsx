@@ -65,10 +65,8 @@ const EffectTile: React.FC<{
   <button
     type="button"
     onClick={open}
-    className="group block text-left transition hover:drop-shadow-glow"
+    className="group flex h-full flex-col bg-[#0f1a2e] text-left outline outline-1 outline-transparent transition-[outline-color] hover:outline-cyan-400"
   >
-    <div className="clip-corner flex h-full flex-col bg-sky-400/35 p-px transition-colors group-hover:bg-cyan-400">
-      <div className="clip-corner flex h-full flex-col bg-slate-900 p-1.5">
         <div className="relative">
           <img
             src={effect.thumbnail}
@@ -84,8 +82,8 @@ const EffectTile: React.FC<{
             </span>
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-1.5 px-1 pb-1 pt-2">
-          <div className="break-words font-display text-xs font-semibold uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200">
+        <div className="flex flex-1 flex-col gap-1.5 px-2 py-2">
+          <div className="break-words font-display text-[13px] font-medium uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200">
             {effect.name}
           </div>
           <div className="font-display text-[10px] uppercase tracking-wider text-sky-300/70">
@@ -105,8 +103,6 @@ const EffectTile: React.FC<{
             ))}
           </ul>
         </div>
-      </div>
-    </div>
   </button>
 );
 
@@ -118,7 +114,7 @@ const KindChips: React.FC<{
   <div
     role="group"
     aria-label="Kinds of effect"
-    className="mb-4 flex flex-wrap items-center gap-2 font-display text-[11px] uppercase tracking-[0.12em]"
+    className="mb-3 flex flex-wrap items-center gap-2 px-3 font-display text-[11px] sm:px-5 uppercase tracking-[0.12em]"
   >
     {kinds.map(({ kind, count }) => {
       const on = picked.includes(kind);
@@ -198,18 +194,18 @@ const EffectResults: React.FC<{
   }, []);
 
   return (
-    <div className="px-3 pt-3 sm:px-5">
+    <div className="pt-3">
       <KindChips kinds={kinds} picked={picked} toggle={toggle} />
       {note && (
-        <p className="mb-4 font-display text-xs tracking-wide text-sky-300/70">
+        <p className="mb-2 px-3 font-display text-xs tracking-wide text-sky-300/70 sm:px-5">
           <span className="text-cyan-400/80">{"// "}</span>
           {note}
         </p>
       )}
       {shown.length === 0 && (
-        <p className="text-sm text-slate-500">No effects match.</p>
+        <p className="px-3 text-sm text-slate-500 sm:px-5">No effects match.</p>
       )}
-      <section className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] items-stretch gap-6">
+      <section className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] items-stretch gap-2 px-2">
         {shown.map((effect) => (
           <EffectTile
             key={effect.file}
