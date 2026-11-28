@@ -19,8 +19,14 @@ import {
 import { SearchModeToggles } from "@/app/components/search-mode-toggles";
 import { SearchWarmup } from "@/app/components/search-warmup";
 import type { RankedStatus } from "@/app/components/use-ranked-items";
+import { TileSizeSlider } from "@/app/components/tile-size-slider";
 import { useJevGrades } from "@/lib/use-jev-grades";
 import { useSearchCertainty, useSearchModes } from "@/lib/use-search-modes";
+import {
+  CARD_DETAIL_MIN_WIDTH,
+  TILE_SIZE_STEPS,
+  useTileSize,
+} from "@/lib/use-tile-size";
 
 const HINT = (
   <>
@@ -61,34 +67,42 @@ const EffectTile: React.FC<{
   effect: EffectSummary;
   level?: number;
   open: () => void;
-}> = ({ effect, level, open }) => (
+  /** Only the picture and a smaller name, for narrow columns. */
+  compact?: boolean;
+}> = ({ effect, level, open, compact = false }) => (
   <button
     type="button"
     onClick={open}
     className="group flex h-full flex-col bg-[#0f1a2e] text-left outline outline-1 outline-transparent transition-[outline-color] hover:outline-cyan-400"
   >
-        <div className="relative">
-          <img
-            src={effect.thumbnail}
-            alt=""
-            width={256}
-            height={144}
-            loading="lazy"
-            className="block aspect-video w-full object-cover"
-          />
-          {level !== undefined && (
-            <span className="absolute left-1 top-1 bg-slate-950/90 px-1.5 py-0.5 font-display text-[10px] font-semibold text-orange-300">
-              J{level}
-            </span>
-          )}
+    <div className="relative">
+      <img
+        src={effect.thumbnail}
+        alt=""
+        width={256}
+        height={144}
+        loading="lazy"
+        className="block aspect-video w-full object-cover"
+      />
+      {level !== undefined && (
+        <span className="absolute left-1 top-1 bg-slate-950/90 px-1.5 py-0.5 font-display text-[10px] font-semibold text-orange-300">
+          J{level}
+        </span>
+      )}
+    </div>
+    <div className="flex flex-1 flex-col gap-1.5 px-2 py-2">
+      <div
+        className={`break-words font-display ${compact ? "text-[11px]" : "text-[13px]"} font-medium uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200`}
+      >
+        {effect.name}
+      </div>
+      {!compact && (
+        <div className="font-display text-[10px] uppercase tracking-wider text-sky-300/70">
+          {effect.kind} · {effect.folder}
         </div>
-        <div className="flex flex-1 flex-col gap-1.5 px-2 py-2">
-          <div className="break-words font-display text-[13px] font-medium uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200">
-            {effect.name}
-          </div>
-          <div className="font-display text-[10px] uppercase tracking-wider text-sky-300/70">
-            {effect.kind} · {effect.folder}
-          </div>
+      )}
+      {!compact && (
+        <>
           <p className="line-clamp-3 text-xs leading-snug text-slate-400">
             {effect.look}
           </p>
@@ -102,7 +116,9 @@ const EffectTile: React.FC<{
               </li>
             ))}
           </ul>
-        </div>
+        </>
+      )}
+    </div>
   </button>
 );
 
@@ -167,6 +183,9 @@ const EffectResults: React.FC<{
     levels,
   } = useRankedEffects(effects, filter, picked, modes, minLevel);
   const note = statusText(status);
+  const { step } = useTileSize();
+  const { minWidth } = TILE_SIZE_STEPS[step];
+  const compact = minWidth < CARD_DETAIL_MIN_WIDTH;
   const byMedia = useMemo(
     () => new Map(effects.map((effect) => [effect.media, effect])),
     [effects],
@@ -205,9 +224,15 @@ const EffectResults: React.FC<{
       {shown.length === 0 && (
         <p className="px-3 text-sm text-slate-500 sm:px-5">No effects match.</p>
       )}
-      <section className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] items-stretch gap-2 px-2">
+      <section
+        className="grid items-stretch gap-2 px-2"
+        style={{
+          gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}px, 1fr))`,
+        }}
+      >
         {shown.map((effect) => (
           <EffectTile
+            compact={compact}
             key={effect.file}
             effect={effect}
             open={() => open(effect)}
@@ -230,7 +255,11 @@ export const EffectGallery: React.FC<{
     <ItemFilterProvider>
       <ItemFilter
         hint={HINT}
-        controls={<SearchModeToggles help={HELP} />}
+        controls={
+          <SearchModeToggles help={HELP}>
+            <TileSizeSlider />
+          </SearchModeToggles>
+        }
       />
       <EffectResults effects={effects} kinds={kinds} />
     </ItemFilterProvider>

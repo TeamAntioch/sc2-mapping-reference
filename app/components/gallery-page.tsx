@@ -20,6 +20,7 @@ import { GalleryEntry } from "@/lib/types";
 import { useJevGrades } from "@/lib/use-jev-grades";
 import { useSearchCertainty, useSearchModes } from "@/lib/use-search-modes";
 import {
+  CARD_DETAIL_MIN_WIDTH,
   THUMBNAIL_MAX_WIDTH,
   TILE_SIZE_STEPS,
   useTileSize,
@@ -115,6 +116,7 @@ const GalleryChildren: React.FC<GalleryProps> = ({
                   onClick={open}
                   src={tileUrl(entry.url)}
                   name={entry.name}
+                  compact={minWidth < CARD_DETAIL_MIN_WIDTH}
                   badge={
                     <>
                       {showGrades && levels.has(entry) && (

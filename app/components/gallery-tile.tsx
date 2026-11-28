@@ -12,8 +12,10 @@ export const GalleryTile = React.forwardRef<
     onClick?: React.MouseEventHandler<HTMLDivElement>;
     /** Overlaid on the picture's corner, such as the palette toggle. */
     badge?: React.ReactNode;
+    /** A smaller name, for narrow columns. */
+    compact?: boolean;
   }
->(({ src, name, onClick, badge }, ref) => (
+>(({ src, name, onClick, badge, compact = false }, ref) => (
   <div
     ref={ref}
     onClick={onClick}
@@ -28,7 +30,9 @@ export const GalleryTile = React.forwardRef<
       />
       {badge}
     </div>
-    <div className="break-words px-2 py-2 font-display text-[13px] font-medium uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200">
+    <div
+      className={`break-words px-2 py-2 font-display ${compact ? "text-[11px]" : "text-[13px]"} font-medium uppercase leading-tight tracking-wider text-sky-100 transition-colors group-hover:text-cyan-200`}
+    >
       {name}
     </div>
   </div>
